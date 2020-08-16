@@ -31,7 +31,7 @@ size_t TowerDrawer::draw(const TowerList& list) const
             draw_tower_row(i, list.at(t));
             draw_spaces(12);
         }
-        if(i != 0) cout << endl;
+        cout << endl;
     }
     return list.length();
 }
