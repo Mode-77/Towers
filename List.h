@@ -7,6 +7,7 @@ template<typename T> class List {
 public:
     void add(const T&);
     void remove(size_t index);
+    void pop();
     void clear();
 
     T& front();
@@ -33,6 +34,13 @@ template<typename T>
 void List<T>::remove(size_t index)
 {
     internalStruct.erase(internalStruct.begin() + index);
+}
+
+
+template<typename T>
+void List<T>::pop()
+{
+    internalStruct.pop_back();
 }
 
 
