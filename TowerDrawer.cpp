@@ -1,5 +1,5 @@
 ﻿#include "TowerDrawer.h"
-#include "Disk.h"
+#include "Tower.h"
 #include <cassert>
 #include <iostream>
 
@@ -118,27 +118,4 @@ void TowerDrawer::draw_tower_row(int row, const Tower& tower) const
     if(row == pole_height_) draw_rod_top(tower);
     else if(row >= tower.num_disks()) draw_rod_row(tower);
     else draw_disk_row(row, tower);
-}
-
-
-size_t TowerList::highest_tower() const
-{
-    assert(!isEmpty());
-    size_t highest = 0;
-    for(size_t i = 0; i < length(); i++) {
-        if(at(i).num_disks() > highest) {
-            highest = at(i).num_disks();
-        }
-    }
-    return highest;
-}
-
-
-bool TowerList::compare(const TowerList& T) const
-{
-    if(T.length() != length()) return false;
-    for(size_t tower = 0; tower < length(); tower++) {
-        if(!(T.at(tower).compare(at(tower)))) return false;
-    }
-    return true;
 }

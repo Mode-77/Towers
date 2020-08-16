@@ -142,11 +142,14 @@
     <ClCompile Include="Disk.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Tower.cpp" />
+    <ClCompile Include="TowerDrawer.cpp" />
     <ClCompile Include="unit_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Disk.h" />
+    <ClInclude Include="List.h" />
     <ClInclude Include="Tower.h" />
+    <ClInclude Include="TowerDrawer.h" />
     <ClInclude Include="unit_tests.h" />
   </ItemGroup>
   <ItemGroup>

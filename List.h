@@ -3,8 +3,8 @@
 #include <vector>
 
 
-template<typename T> struct List {
-
+template<typename T> class List {
+public:
     void add(const T&);
     void remove(size_t index);
     void clear();
