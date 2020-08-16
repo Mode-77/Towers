@@ -2,17 +2,21 @@
 #include <string>
 #include <cstdlib>
 #include <cmath>
+
+#include "defines.h"
+
 #include "Tower.h"
 #include "TowerDrawer.h"
+//#include "PerfectHanoi.h"
 
 using namespace std;
-
-#define RUN_UNIT_TESTS
 
 #ifdef RUN_UNIT_TESTS
 #include "unit_tests.h"
 #endif
 
+
+#ifndef RUN_UNIT_TESTS
 
 unsigned least_possible(size_t num_disks)
 {
@@ -28,8 +32,12 @@ double get_score(size_t num_disks, unsigned moves)
 
 void show_results(size_t num_disks, unsigned moves)
 {
-    cout << "You finished in " << moves << " moves" << endl;
-    cout << "Best possible is " << least_possible(num_disks) << " moves" << endl;
+    cout << "You finished in "\
+        << moves << " moves" << endl;
+
+    cout << "Best possible is "\
+        << least_possible(num_disks) << " moves" << endl;
+
     cout << "Your score: " << get_score(num_disks, moves) << "%" << endl;
 }
 
@@ -67,29 +75,29 @@ void redraw_towers(const TowerList& T, const TowerDrawer& TD)
 {
     system("cls");
     TD.draw(T);
-    cout << endl << endl;
 }
+
+#endif
 
 
 int main(int argc, char** argv)
 {
 #ifdef RUN_UNIT_TESTS
 
-    Test_disk_drawing(1, 10);
+    New_tower_is_diskless();
     Number_of_disks_match_expected();
     Disks_are_strictly_decreasing();
     Drawing_empty_tower_list_does_nothing();
     Drawing_diskless_tower_draws_entire_rod();
-    Putting_on_diskless_tower_makes_size_one();
+    Test_disk_drawing(1, 10);
     Test_tower_drawing(0, 10);
     Test_tower_list_drawing();
     Test_top_to_top();
+    Test_region_drawing();
 
-#endif
+#else
 
-#ifndef RUN_UNIT_TESTS
-
-    const int NUM_DISKS = 5;
+    const int NUM_DISKS = 1;
 
     PerfectHanoi perfect_game(NUM_DISKS);
 
@@ -109,6 +117,7 @@ int main(int argc, char** argv)
     TowerDrawer tower_drawer(NUM_DISKS + 3);
 
     redraw_towers(towers, tower_drawer);
+
     cout << "Good luck!" << endl << endl;
 
     while(goal_tower.num_disks() != NUM_DISKS) {
@@ -139,7 +148,9 @@ int main(int argc, char** argv)
             redraw_towers(towers, tower_drawer);
             cout << "Nothing on " << from + 1 << "..." << endl << endl;
         }
-        else if(!tower_to.is_diskless() && (tower_from.size_of_top() > tower_to.size_of_top())) {
+        else if(!tower_to.is_diskless() &&
+            (tower_from.size_of_top() > tower_to.size_of_top())) {
+
             redraw_towers(towers, tower_drawer);
             cout << "Can't place larger disk on smaller disk..." << endl << endl;
         }

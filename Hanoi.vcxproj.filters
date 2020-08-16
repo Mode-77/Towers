@@ -30,6 +30,9 @@
     <ClCompile Include="TowerDrawer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PerfectHanoi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="unit_tests.h">
@@ -45,6 +48,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TowerDrawer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PerfectHanoi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
