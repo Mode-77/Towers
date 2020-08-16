@@ -40,9 +40,6 @@ struct PerfectHanoi {
     bool compare(const TowerList&) const;
 
 private:
-    //bool equals(const int* X, const int* Y) const;
-    //void swap(int* X) const;
-    //bool is_best_move(int* actual, const int* best) const;
     void do_valid_action(Tower& X, Tower& Y) const;
 
 

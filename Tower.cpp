@@ -146,37 +146,6 @@ bool PerfectHanoi::compare(const TowerList& T) const
 {
     return towers.compare(T);
 }
-/*
-bool PerfectHanoi::equals(const int* X, const int* Y) const
-{
-    return (X[0] == Y[0]) && (X[1] == Y[1]);
-}
-
-void PerfectHanoi::swap(int* X) const
-{
-    int temp = X[1];
-    X[1] = X[0];
-    X[0] = temp;
-}
-
-bool is_best_move(int* actual, const int* best)
-{
-    if(equals(actual, best)) return true;
-    swap(actual);
-    return equals(actual, best);
-}
-
-void do_best_possible(TowerList& towers)
-{
-    static int cpu_choice =
-    // do the valid action between A and C
-    do_valid_action(towers[0], towers[2]);
-    // do the valid action between A and B
-    do_valid_action(towers[0], towers[1]);
-    // do the valid action between B and C
-    do_valid_action(towers[1], towers[2]);
-}
-*/
 
 void PerfectHanoi::do_valid_action(Tower& X, Tower& Y) const
 {

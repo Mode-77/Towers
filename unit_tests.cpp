@@ -1,6 +1,7 @@
 #include "unit_tests.h"
 #include "Disk.h"
 #include "Tower.h"
+#include "TowerDrawer.h"
 
 #include <cassert>
 #include <iostream>
@@ -9,31 +10,18 @@ using namespace std;
 
 
 
-// firstDiskSize <= lastDiskSize
-void Test_disk_drawing(const int firstDiskSize, const int lastDiskSize, int style)
+void New_tower_is_diskless()
 {
-    assert(firstDiskSize <= lastDiskSize);
-
-    for(int i = firstDiskSize; i <= lastDiskSize; i++) {
-        cout << "[" << i << "]:\t";
-        Disk aTestDisk(i);
-
-        switch(style) {
-        case 0: aTestDisk.draw(); break;
-        case 1: draw_slash_bracket_style(aTestDisk); break;
-        default: aTestDisk.draw();
-        }
-
-        cout << endl;
-    }
+    Tower new_tower;
+    assert(new_tower.is_diskless());
 }
 
 void Number_of_disks_match_expected()
 {
     const int NUM_TRIALS = 1000;
-    for(int i = 0; i <= NUM_TRIALS; i++) {
-        Tower testTower(i);
-        assert(testTower.num_disks() == i);
+    for(int num_disks = 0; num_disks <= NUM_TRIALS; num_disks++) {
+        Tower test_tower(num_disks);
+        assert(test_tower.num_disks() == num_disks);
     }
 }
 
@@ -156,4 +144,23 @@ void Test_top_to_top()
 
     td.draw(test_tower_list);
     cout << endl;
+}
+
+// firstDiskSize <= lastDiskSize
+void Test_disk_drawing(const int firstDiskSize, const int lastDiskSize, int style)
+{
+    assert(firstDiskSize <= lastDiskSize);
+
+    for(int i = firstDiskSize; i <= lastDiskSize; i++) {
+        cout << "[" << i << "]:\t";
+        Disk aTestDisk(i);
+
+        switch(style) {
+        case 0: aTestDisk.draw(); break;
+        case 1: draw_slash_bracket_style(aTestDisk); break;
+        default: aTestDisk.draw();
+        }
+
+        cout << endl;
+    }
 }
