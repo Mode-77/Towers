@@ -7,7 +7,7 @@
 
 #include "Tower.h"
 #include "TowerDrawer.h"
-//#include "PerfectHanoi.h"
+#include "PerfectHanoi.h"
 
 using namespace std;
 
