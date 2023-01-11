@@ -73,7 +73,7 @@ void show_progress_message(int which_milestone)
 
 void redraw_towers(const TowerList& T, const TowerDrawer& TD)
 {
-    system("cls");
+    system("clear");
     TD.draw(T);
 }
 

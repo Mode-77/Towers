@@ -2,6 +2,7 @@
 #include "Tower.h"
 #include <cassert>
 #include <iostream>
+#include <climits>
 
 using namespace std;
 
