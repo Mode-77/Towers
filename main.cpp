@@ -18,6 +18,7 @@ using namespace std;
 
 #ifndef RUN_UNIT_TESTS
 
+
 unsigned least_possible(size_t num_disks)
 {
     return pow(2, num_disks) - 1;
@@ -30,52 +31,88 @@ double get_score(size_t num_disks, unsigned moves)
 }
 
 
-void show_results(size_t num_disks, unsigned moves)
+void PrintResults(size_t num_disks, unsigned moves)
 {
-    cout << "You finished in "\
-        << moves << " moves" << endl;
+    cout << "You finished in " << moves << " moves\n";
 
     cout << "Best possible is "\
-        << least_possible(num_disks) << " moves" << endl;
+        << least_possible(num_disks) << " moves\n";
 
-    cout << "Your score: " << get_score(num_disks, moves) << "%" << endl;
+    cout << "Your score: " << get_score(num_disks, moves) << "%\n";
 }
 
 
-double progress_remaining(int moves_remaining, int total_possible)
-{
-    return (double)moves_remaining / total_possible;
-}
-
-
-double progress_made(int moves_remaining, int total_possible)
-{
-    return 1 - progress_remaining(moves_remaining, total_possible);
-}
-
-
-double hit_milestone(double inc, double amount)
-{
-    return amount / inc;
-}
-
-
-void show_progress_message(int which_milestone)
-{
-    switch(which_milestone) {
-    case 1: cout << "You're doing great! Keep going!" << endl; break;
-    case 2: cout << "You're halfway there! Keep it up!" << endl; break;
-    case 3: cout << "You've almost got it! Don't stop!" << endl; break;
-    case 4: cout << "You did it!" << endl; break;
-    }
-}
-
-
-void redraw_towers(const TowerList& T, const TowerDrawer& TD)
+void DrawTowers(const TowerList& towerList, const TowerDrawer& towerDrawer)
 {
     system("clear");
-    TD.draw(T);
+    towerDrawer.draw(towerList);
 }
+
+
+void PrintStatus(const string& statusMessage)
+{
+    cout << "\n";
+    cout << statusMessage << "\n";
+    cout << "\n";
+}
+
+
+void AskQuestion(const string& question)
+{
+    cout << question;
+}
+
+
+string GetRawInput()
+{
+    string input;
+    getline(cin, input);
+    return input;
+}
+
+
+// 0 = Input is correct move syntax
+// 1 = Input is empty
+// 2 = Input is "quit"
+int ProcessInput(const string& input)
+{
+    if(input.empty()) return 1;
+    if(!input.compare("quit")) return 2;
+    return 0;
+}
+
+
+// 0 = Input is a valid move
+// 1 = Taking from a diskless tower
+// 2 = Putting a larger disk on a smaller disk
+int CheckForValidMove(const string& input, const TowerList& towerList)
+{
+    int from = stoi(input.substr(0, 1)) - 1;
+    int to = stoi(input.substr(2, 1)) - 1;
+    const Tower& towerFrom = towerList.at(from);
+    const Tower& towerTo = towerList.at(to);
+    if(towerFrom.is_diskless()) return 1;
+    if(!towerTo.is_diskless() &&
+        (towerFrom.size_of_top() > towerTo.size_of_top())) return 2;
+    return 0;
+}
+
+
+void DoMove(const string& move, TowerList& towerList)
+{
+    int from = stoi(move.substr(0, 1)) - 1;
+    int to = stoi(move.substr(2, 1)) - 1;
+    Tower& towerFrom = towerList.at(from);
+    Tower& towerTo = towerList.at(to);
+    towerFrom.top_to_top(towerTo);
+}
+
+
+bool CheckForGameWon(const Tower& goalTower, int totalDisks)
+{
+    return goalTower.num_disks() == totalDisks;
+}
+
 
 #endif
 
@@ -99,90 +136,63 @@ int main(int argc, char** argv)
 
     const int NUM_DISKS = 1;
 
-    PerfectHanoi perfect_game(NUM_DISKS);
-
     TowerList towers;
     towers.add(Tower(NUM_DISKS));
     towers.add(Tower());
     towers.add(Tower());
 
-    const Tower& goal_tower = towers.back();
-
-    int moves = 0;
-    int moves_left = least_possible(NUM_DISKS);
-    bool asked_for_first_move = false;
-    bool was_best_move = true;
-    int current_progress_point = 0;
-
+    const Tower& goalTower = towers.back();
     TowerDrawer tower_drawer(NUM_DISKS + 3);
 
-    redraw_towers(towers, tower_drawer);
+    int moves = 0;
+    bool requestQuit = false;
+    bool won = false;
+    string status, question, rawInput;
+    status = "Good luck!";
+    question = "What's your first move? ";
+    while(!(requestQuit || won)) {
+        DrawTowers(towers, tower_drawer);
+        PrintStatus(status);
+        AskQuestion(question);
+        rawInput = GetRawInput();
 
-    cout << "Good luck!" << endl << endl;
-
-    while(goal_tower.num_disks() != NUM_DISKS) {
-        if(!asked_for_first_move) {
-            cout << "What's your first move? ";
-            asked_for_first_move = true;
-        }
-        else cout << "What's your next move? ";
-
-        string input("");
-        getline(cin, input);
-
-        if(input == "quit") {
-            break;
-        }
-
-        int from = stoi(input.substr(0, 1)) - 1;
-        int to = stoi(input.substr(2, 1)) - 1;
-
-        // Do tower list bounds checking here
-
-        Tower& tower_from = towers.at(from);
-        Tower& tower_to = towers.at(to);
-
-
-
-        if(tower_from.is_diskless()) {
-            redraw_towers(towers, tower_drawer);
-            cout << "Nothing on " << from + 1 << "..." << endl << endl;
-        }
-        else if(!tower_to.is_diskless() &&
-            (tower_from.size_of_top() > tower_to.size_of_top())) {
-
-            redraw_towers(towers, tower_drawer);
-            cout << "Can't place larger disk on smaller disk..." << endl << endl;
-        }
-        else {
-            if(was_best_move) perfect_game.do_next_move();
-            tower_from.top_to_top(tower_to);
-
-            redraw_towers(towers, tower_drawer);
-
-            if(perfect_game.compare(towers)) {
-                was_best_move = true;
-                moves_left--;
-
-                int new_progress_point =
-                    hit_milestone(0.25, progress_made(moves_left, least_possible(NUM_DISKS)));
-
-                if(new_progress_point > current_progress_point) {
-                    current_progress_point = new_progress_point;
-                    show_progress_message(current_progress_point);
-                }
+        switch(ProcessInput(rawInput)) {
+        case 0: break;
+        case 1: continue;
+        case 2:
+            {
+                requestQuit = true;
+                continue;
             }
-            else was_best_move = false;
-            moves++;
+        }
 
-            if((moves == 3) && (moves_left == least_possible(NUM_DISKS) - 3)) {
-                cout << "Good first moves! Keep it up!" << endl << endl;
+        switch(CheckForValidMove(rawInput, towers)) {
+        case 0:
+            {
+                DoMove(rawInput, towers);
+                moves++;
+                won = CheckForGameWon(goalTower, NUM_DISKS);
+                status = "";
+                question = "What's your next move? ";
+                continue;
+            }
+        case 1:
+            {
+                status = "Nothing on that tower...";
+                continue;
+            }
+        case 2:
+            {
+                status = "Can't place a larger disk on a smaller disk...";
+                continue;
             }
         }
     }
 
-    if(goal_tower.num_disks() == NUM_DISKS) {
-        show_results(NUM_DISKS, moves);
+    if(won) {
+        DrawTowers(towers, tower_drawer);
+        PrintStatus("You win!");
+        PrintResults(NUM_DISKS, moves);
     }
 
 #endif
