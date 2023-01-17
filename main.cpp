@@ -11,13 +11,6 @@
 
 using namespace std;
 
-#ifdef RUN_UNIT_TESTS
-#include "unit_tests.h"
-#endif
-
-
-#ifndef RUN_UNIT_TESTS
-
 
 unsigned least_possible(size_t num_disks)
 {
@@ -114,26 +107,10 @@ bool CheckForGameWon(const Tower& goalTower, int totalDisks)
 }
 
 
-#endif
 
 
 int main(int argc, char** argv)
 {
-#ifdef RUN_UNIT_TESTS
-
-    New_tower_is_diskless();
-    Number_of_disks_match_expected();
-    Disks_are_strictly_decreasing();
-    Drawing_empty_tower_list_does_nothing();
-    Drawing_diskless_tower_draws_entire_rod();
-    Test_disk_drawing(1, 10);
-    Test_tower_drawing(0, 10);
-    Test_tower_list_drawing();
-    Test_top_to_top();
-    Test_region_drawing();
-
-#else
-
     const int NUM_DISKS = 1;
 
     TowerList towers;
@@ -194,8 +171,6 @@ int main(int argc, char** argv)
         PrintStatus("You win!");
         PrintResults(NUM_DISKS, moves);
     }
-
-#endif
 
     return 0;
 }
