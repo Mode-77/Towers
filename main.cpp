@@ -109,9 +109,9 @@ bool CheckForGameWon(const Tower& goalTower, int totalDisks)
 
 
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
-    const int NUM_DISKS = 1;
+    const int NUM_DISKS = (argc == 2) ? stoi(argv[1]) : 3;
 
     TowerList towers;
     towers.add(Tower(NUM_DISKS));
