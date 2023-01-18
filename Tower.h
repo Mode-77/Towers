@@ -30,5 +30,4 @@ private:
 class TowerList: public List<Tower> {
 public:
     size_t highest_tower() const;
-    bool compare(const TowerList&) const;
 };

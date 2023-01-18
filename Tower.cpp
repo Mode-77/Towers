@@ -104,13 +104,3 @@ size_t TowerList::highest_tower() const
     }
     return highest;
 }
-
-
-bool TowerList::compare(const TowerList& T) const
-{
-    if(T.length() != length()) return false;
-    for(size_t tower = 0; tower < length(); tower++) {
-        if(!(T.at(tower).compare(at(tower)))) return false;
-    }
-    return true;
-}
