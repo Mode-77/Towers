@@ -66,12 +66,14 @@ std::string getRawInput()
 // 0 = Input is correct move syntax
 // 1 = Input is empty
 // 2 = Input is "quit"
-enum RESULT { SYNTAX_CORRECT, EMPTY_INPUT, REQUEST_QUIT, VALID_MOVE, DISKLESS_TOWER, LARGER_ON_SMALLER };
+// 3 = Input is "reset"
+enum RESULT { SYNTAX_CORRECT, EMPTY_INPUT, REQUEST_QUIT, VALID_MOVE, DISKLESS_TOWER, LARGER_ON_SMALLER, REQUEST_RESET };
 
 RESULT processInput(const std::string& input)
 {
     if(input.empty()) return EMPTY_INPUT;
     if(!input.compare("quit")) return REQUEST_QUIT;
+    if(!input.compare("reset")) return REQUEST_RESET;
     return SYNTAX_CORRECT;
 }
 
@@ -119,7 +121,7 @@ int main(int argc, char* argv[])
     towers.push_back(Tower());
     towers.push_back(Tower());
 
-    const Tower& goalTower = towers.back();
+    const int GOAL_TOWER_INDEX = 2;
     TowerDrawer tower_drawer(NUM_DISKS + 3);
 
     int moves = 0;
@@ -142,6 +144,17 @@ int main(int argc, char* argv[])
                 requestQuit = true;
                 continue;
             }
+        case REQUEST_RESET:
+            {
+                towers.clear();
+                towers.push_back(Tower(NUM_DISKS));
+                towers.push_back(Tower());
+                towers.push_back(Tower());
+                moves = 0;
+                status = "Good luck!";
+                question = "What's your first move? ";
+                continue;
+            }
         }
 
         switch(checkForValidMove(rawInput, towers)) {
@@ -149,7 +162,7 @@ int main(int argc, char* argv[])
             {
                 doMove(rawInput, towers);
                 moves++;
-                won = checkForGameWon(goalTower, NUM_DISKS);
+                won = checkForGameWon(towers.at(GOAL_TOWER_INDEX), NUM_DISKS);
                 status = "";
                 question = "What's your next move? ";
                 break;
