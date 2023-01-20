@@ -92,14 +92,14 @@ bool Tower::compare(const Tower& T) const
 }
 
 
-
-size_t TowerList::highest_tower() const
+// Returns the number of disks on the tower in the vector with the most disks
+size_t highestTower(const std::vector<Tower>& towers)
 {
-    assert(!isEmpty());
+    assert(!towers.empty());
     size_t highest = 0;
-    for(size_t i = 0; i < length(); i++) {
-        if(at(i).num_disks() > highest) {
-            highest = at(i).num_disks();
+    for(size_t i = 0; i < towers.size(); i++) {
+        if(towers.at(i).num_disks() > highest) {
+            highest = towers.at(i).num_disks();
         }
     }
     return highest;

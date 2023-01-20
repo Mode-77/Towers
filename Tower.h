@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Disk.h"
-#include "List.h"
 #include <vector>
 
 #include "unit_tests.h"
@@ -25,9 +24,4 @@ private:
     std::vector<Disk> disks_;
 };
 
-
-
-class TowerList: public List<Tower> {
-public:
-    size_t highest_tower() const;
-};
+size_t highestTower(const std::vector<Tower>& towers);
