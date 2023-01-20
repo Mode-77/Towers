@@ -1,17 +1,16 @@
 ﻿#pragma once
 
 #include <cstddef>
+#include <vector>
 
 class Tower;
-class TowerList;
-
 
 class TowerDrawer {
 public:
     TowerDrawer(int pole_height);
     int pole_height() const;
     size_t draw(const Tower&) const;
-    size_t draw(const TowerList&) const;
+    size_t draw(const std::vector<Tower>&) const;
 
 private:
     void draw_spaces(const int num_spaces = 1) const;

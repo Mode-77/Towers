@@ -2,13 +2,13 @@
 #include <string>
 #include <cstdlib>
 #include <cmath>
+#include <vector>
 
 #include "defines.h"
 
 #include "Tower.h"
 #include "TowerDrawer.h"
 
-using namespace std;
 
 
 unsigned least_possible(size_t num_disks)
@@ -23,42 +23,42 @@ double get_score(size_t num_disks, unsigned moves)
 }
 
 
-void PrintResults(size_t num_disks, unsigned moves)
+void printResults(size_t num_disks, unsigned moves)
 {
-    cout << "You finished in " << moves << " moves\n";
+    std::cout << "You finished in " << moves << " moves\n";
 
-    cout << "Best possible is "\
+    std::cout << "Best possible is "\
         << least_possible(num_disks) << " moves\n";
 
-    cout << "Your score: " << get_score(num_disks, moves) << "%\n";
+    std::cout << "Your score: " << get_score(num_disks, moves) << "%\n";
 }
 
 
-void DrawTowers(const TowerList& towerList, const TowerDrawer& towerDrawer)
+void drawTowers(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer)
 {
     system("clear");
-    towerDrawer.draw(towerList);
+    towerDrawer.draw(towers);
 }
 
 
-void PrintStatus(const string& statusMessage)
+void printStatus(const std::string& statusMessage)
 {
-    cout << "\n";
-    cout << statusMessage << "\n";
-    cout << "\n";
+    std::cout << "\n";
+    std::cout << statusMessage << "\n";
+    std::cout << "\n";
 }
 
 
-void AskQuestion(const string& question)
+void askQuestion(const std::string& question)
 {
-    cout << question;
+    std::cout << question;
 }
 
 
-string GetRawInput()
+std::string getRawInput()
 {
-    string input;
-    getline(cin, input);
+    std::string input;
+    getline(std::cin, input);
     return input;
 }
 
@@ -66,41 +66,43 @@ string GetRawInput()
 // 0 = Input is correct move syntax
 // 1 = Input is empty
 // 2 = Input is "quit"
-int ProcessInput(const string& input)
+enum RESULT { SYNTAX_CORRECT, EMPTY_INPUT, REQUEST_QUIT, VALID_MOVE, DISKLESS_TOWER, LARGER_ON_SMALLER };
+
+RESULT processInput(const std::string& input)
 {
-    if(input.empty()) return 1;
-    if(!input.compare("quit")) return 2;
-    return 0;
+    if(input.empty()) return EMPTY_INPUT;
+    if(!input.compare("quit")) return REQUEST_QUIT;
+    return SYNTAX_CORRECT;
 }
 
 
 // 0 = Input is a valid move
 // 1 = Taking from a diskless tower
 // 2 = Putting a larger disk on a smaller disk
-int CheckForValidMove(const string& input, const TowerList& towerList)
+RESULT checkForValidMove(const std::string& input, const std::vector<Tower>& towers)
 {
     int from = stoi(input.substr(0, 1)) - 1;
     int to = stoi(input.substr(2, 1)) - 1;
-    const Tower& towerFrom = towerList.at(from);
-    const Tower& towerTo = towerList.at(to);
-    if(towerFrom.is_diskless()) return 1;
+    const Tower& towerFrom = towers.at(from);
+    const Tower& towerTo = towers.at(to);
+    if(towerFrom.is_diskless()) return DISKLESS_TOWER;
     if(!towerTo.is_diskless() &&
-        (towerFrom.size_of_top() > towerTo.size_of_top())) return 2;
-    return 0;
+        (towerFrom.size_of_top() > towerTo.size_of_top())) return LARGER_ON_SMALLER;
+    return VALID_MOVE;
 }
 
 
-void DoMove(const string& move, TowerList& towerList)
+void doMove(const std::string& move, std::vector<Tower>& towers)
 {
     int from = stoi(move.substr(0, 1)) - 1;
     int to = stoi(move.substr(2, 1)) - 1;
-    Tower& towerFrom = towerList.at(from);
-    Tower& towerTo = towerList.at(to);
+    Tower& towerFrom = towers.at(from);
+    Tower& towerTo = towers.at(to);
     towerFrom.top_to_top(towerTo);
 }
 
 
-bool CheckForGameWon(const Tower& goalTower, int totalDisks)
+bool checkForGameWon(const Tower& goalTower, int totalDisks)
 {
     return goalTower.num_disks() == totalDisks;
 }
@@ -110,12 +112,12 @@ bool CheckForGameWon(const Tower& goalTower, int totalDisks)
 
 int main(int argc, char* argv[])
 {
-    const int NUM_DISKS = (argc == 2) ? stoi(argv[1]) : 3;
+    const int NUM_DISKS = (argc == 2) ? std::stoi(argv[1]) : 3;
 
-    TowerList towers;
-    towers.add(Tower(NUM_DISKS));
-    towers.add(Tower());
-    towers.add(Tower());
+    std::vector<Tower> towers;
+    towers.push_back(Tower(NUM_DISKS));
+    towers.push_back(Tower());
+    towers.push_back(Tower());
 
     const Tower& goalTower = towers.back();
     TowerDrawer tower_drawer(NUM_DISKS + 3);
@@ -123,52 +125,52 @@ int main(int argc, char* argv[])
     int moves = 0;
     bool requestQuit = false;
     bool won = false;
-    string status, question, rawInput;
+    std::string status, question, rawInput;
     status = "Good luck!";
     question = "What's your first move? ";
     while(!(requestQuit || won)) {
-        DrawTowers(towers, tower_drawer);
-        PrintStatus(status);
-        AskQuestion(question);
-        rawInput = GetRawInput();
+        drawTowers(towers, tower_drawer);
+        printStatus(status);
+        askQuestion(question);
+        rawInput = getRawInput();
 
-        switch(ProcessInput(rawInput)) {
-        case 0: break;
-        case 1: continue;
-        case 2:
+        switch(processInput(rawInput)) {
+        case SYNTAX_CORRECT: break;
+        case EMPTY_INPUT: continue;
+        case REQUEST_QUIT:
             {
                 requestQuit = true;
                 continue;
             }
         }
 
-        switch(CheckForValidMove(rawInput, towers)) {
-        case 0:
+        switch(checkForValidMove(rawInput, towers)) {
+        case VALID_MOVE:
             {
-                DoMove(rawInput, towers);
+                doMove(rawInput, towers);
                 moves++;
-                won = CheckForGameWon(goalTower, NUM_DISKS);
+                won = checkForGameWon(goalTower, NUM_DISKS);
                 status = "";
                 question = "What's your next move? ";
-                continue;
+                break;
             }
-        case 1:
+        case DISKLESS_TOWER:
             {
                 status = "Nothing on that tower...";
-                continue;
+                break;
             }
-        case 2:
+        case LARGER_ON_SMALLER:
             {
                 status = "Can't place a larger disk on a smaller disk...";
-                continue;
+                break;
             }
         }
     }
 
     if(won) {
-        DrawTowers(towers, tower_drawer);
-        PrintStatus("You win!");
-        PrintResults(NUM_DISKS, moves);
+        drawTowers(towers, tower_drawer);
+        printStatus("You win!");
+        printResults(NUM_DISKS, moves);
     }
 
     return 0;

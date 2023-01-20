@@ -17,24 +17,24 @@ int TowerDrawer::pole_height() const { return pole_height_; }
 
 size_t TowerDrawer::draw(const Tower& T) const
 {
-    TowerList temp_tower_list;
-    temp_tower_list.add(T);
-    return draw(temp_tower_list);
+    std::vector<Tower> tempTowerVector;
+    tempTowerVector.push_back(T);
+    return draw(tempTowerVector);
 }
 
 
-size_t TowerDrawer::draw(const TowerList& list) const
+size_t TowerDrawer::draw(const std::vector<Tower>& towers) const
 {
-    if(list.isEmpty()) return 0;
-    assert(pole_height_ > list.highest_tower());
+    if(towers.empty()) return 0;
+    assert(pole_height_ > highestTower(towers));
     for(int i = pole_height_; i >= 0; i--) {
-        for(size_t t = 0; t < list.length(); t++) {
-            draw_tower_row(i, list.at(t));
+        for(size_t t = 0; t < towers.size(); t++) {
+            draw_tower_row(i, towers.at(t));
             draw_spaces(12);
         }
         cout << endl;
     }
-    return list.length();
+    return towers.size();
 }
 
 
