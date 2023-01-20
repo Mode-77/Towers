@@ -110,6 +110,13 @@ bool checkForGameWon(const Tower& goalTower, int totalDisks)
 }
 
 
+void resetTowers(std::vector<Tower>& towers, int totalDisks)
+{
+    towers.clear();
+    towers.push_back(Tower(totalDisks));
+    towers.push_back(Tower());
+    towers.push_back(Tower());
+}
 
 
 int main(int argc, char* argv[])
@@ -117,9 +124,7 @@ int main(int argc, char* argv[])
     const int NUM_DISKS = (argc == 2) ? std::stoi(argv[1]) : 3;
 
     std::vector<Tower> towers;
-    towers.push_back(Tower(NUM_DISKS));
-    towers.push_back(Tower());
-    towers.push_back(Tower());
+    resetTowers(towers, NUM_DISKS);
 
     const int GOAL_TOWER_INDEX = 2;
     TowerDrawer tower_drawer(NUM_DISKS + 3);
@@ -146,10 +151,7 @@ int main(int argc, char* argv[])
             }
         case REQUEST_RESET:
             {
-                towers.clear();
-                towers.push_back(Tower(NUM_DISKS));
-                towers.push_back(Tower());
-                towers.push_back(Tower());
+                resetTowers(towers, NUM_DISKS);
                 moves = 0;
                 status = "Good luck!";
                 question = "What's your first move? ";
