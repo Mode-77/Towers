@@ -1,7 +1,7 @@
-all: hanoi
+all: towers
 
-hanoi: Disk.cpp main.cpp Tower.cpp TowerDrawer.cpp
-	g++ -std=c++17 Disk.cpp main.cpp Tower.cpp TowerDrawer.cpp -o hanoi
+towers: Disk.cpp main.cpp Tower.cpp TowerDrawer.cpp
+	g++ -std=c++17 Disk.cpp main.cpp Tower.cpp TowerDrawer.cpp -o towers -g
 
 clean:
-	rm hanoi
+	rm towers

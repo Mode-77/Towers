@@ -1,8 +1,14 @@
+/*
+    Author: Jared Thomas
+    Date:   Tuesday, August 4, 2020
+*/
+
 #include <iostream>
 #include <string>
-#include <cstdlib>
-#include <cmath>
 #include <vector>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
 
 #include "defines.h"
 
@@ -11,15 +17,15 @@
 
 
 
-unsigned least_possible(size_t num_disks)
+unsigned leastPossible(size_t num_disks)
 {
     return pow(2, num_disks) - 1;
 }
 
 
-double get_score(size_t num_disks, unsigned moves)
+double getScore(size_t num_disks, unsigned moves)
 {
-    return round(100.0 * least_possible(num_disks) / moves);
+    return round(100.0 * leastPossible(num_disks) / moves);
 }
 
 
@@ -28,9 +34,9 @@ void printResults(size_t num_disks, unsigned moves)
     std::cout << "You finished in " << moves << " moves\n";
 
     std::cout << "Best possible is "\
-        << least_possible(num_disks) << " moves\n";
+        << leastPossible(num_disks) << " moves\n";
 
-    std::cout << "Your score: " << get_score(num_disks, moves) << "%\n";
+    std::cout << "Your score: " << getScore(num_disks, moves) << "%\n";
 }
 
 
@@ -58,33 +64,88 @@ void askQuestion(const std::string& question)
 std::string getRawInput()
 {
     std::string input;
-    getline(std::cin, input);
+    std::getline(std::cin, input);
     return input;
 }
 
 
-// 0 = Input is correct move syntax
-// 1 = Input is empty
-// 2 = Input is "quit"
-// 3 = Input is "reset"
-enum RESULT { SYNTAX_CORRECT, EMPTY_INPUT, REQUEST_QUIT, VALID_MOVE, DISKLESS_TOWER, LARGER_ON_SMALLER, REQUEST_RESET };
+std::vector<std::string> tokenize(const std::string&);
 
-RESULT processInput(const std::string& input)
+// Returns the number of tokens in the input string
+int numTokens(const std::string& s)
 {
-    if(input.empty()) return EMPTY_INPUT;
-    if(!input.compare("quit")) return REQUEST_QUIT;
-    if(!input.compare("reset")) return REQUEST_RESET;
-    return SYNTAX_CORRECT;
+    return tokenize(s).size();
 }
 
+
+// Splits the string on the space (' ') character. Ignores leading spaces.
+// Returns a vector containing the tokens.
+std::vector<std::string> tokenize(const std::string& s)
+{
+    /* TODO: BROKEN */
+    // Create an intermediate string buffer
+    const std::size_t BUFFER_LENGTH = s.length() + 1;
+    char* buffer = new char[BUFFER_LENGTH];
+    memset(buffer, 0, BUFFER_LENGTH);
+    // Copy the string into the buffer
+    s.copy(buffer, s.length());
+    // Tokenize
+    std::vector<std::string> result;
+    char* token = strtok(buffer, " ");
+    while(token) {
+        result.push_back(std::string(token));
+        token = strtok(nullptr, " ");
+    }
+    delete[] buffer;
+    return result;
+}
+
+
+enum INPUT_TYPE { INVALID_INPUT, MOVE, COMMAND, EMPTY_INPUT };
+
+INPUT_TYPE parseInput(const std::string& input)
+{
+    /*
+        If there are two tokens, then treat the input as valid syntax for a move.
+        XXX XXXX
+
+        If there is only one token in the input, then treat it as a command.
+        XXXXXXX
+
+        If there are no tokens, then this is empty input.
+
+        If there are more than two tokens, then the input is invalid.
+        XXX XXXX XX
+    */
+    int numberTokens = numTokens(input);
+    if(numberTokens == 2) return MOVE;
+    if(numberTokens == 1) return COMMAND;
+    if(numberTokens == 0) return EMPTY_INPUT;
+    return INVALID_INPUT;
+}
+
+
+enum COMMAND_TYPE { REQUEST_QUIT, REQUEST_RESET, INVALID_COMMAND };
+
+COMMAND_TYPE parseCommand(const std::string& input)
+{
+    std::string command(tokenize(input).front());
+    if(command == "quit") return REQUEST_QUIT;
+    if(command == "reset") return REQUEST_RESET;
+    return INVALID_COMMAND;
+}
+
+
+enum MOVE_TYPE { VALID_MOVE, DISKLESS_TOWER, LARGER_ON_SMALLER };
 
 // 0 = Input is a valid move
 // 1 = Taking from a diskless tower
 // 2 = Putting a larger disk on a smaller disk
-RESULT checkForValidMove(const std::string& input, const std::vector<Tower>& towers)
+MOVE_TYPE parseMove(const std::string& input, const std::vector<Tower>& towers)
 {
-    int from = stoi(input.substr(0, 1)) - 1;
-    int to = stoi(input.substr(2, 1)) - 1;
+    std::vector<std::string> tokens(tokenize(input));
+    int from = std::stoi(tokens.at(0)) - 1;
+    int to = std::stoi(tokens.at(1)) - 1;
     const Tower& towerFrom = towers.at(from);
     const Tower& towerTo = towers.at(to);
     if(towerFrom.is_diskless()) return DISKLESS_TOWER;
@@ -96,8 +157,9 @@ RESULT checkForValidMove(const std::string& input, const std::vector<Tower>& tow
 
 void doMove(const std::string& move, std::vector<Tower>& towers)
 {
-    int from = stoi(move.substr(0, 1)) - 1;
-    int to = stoi(move.substr(2, 1)) - 1;
+    std::vector<std::string> tokens(tokenize(move));
+    int from = std::stoi(tokens.at(0)) - 1;
+    int to = std::stoi(tokens.at(1)) - 1;
     Tower& towerFrom = towers.at(from);
     Tower& towerTo = towers.at(to);
     towerFrom.top_to_top(towerTo);
@@ -141,25 +203,40 @@ int main(int argc, char* argv[])
         askQuestion(question);
         rawInput = getRawInput();
 
-        switch(processInput(rawInput)) {
-        case SYNTAX_CORRECT: break;
+        switch(parseInput(rawInput)) {
+        case MOVE: break;
         case EMPTY_INPUT: continue;
-        case REQUEST_QUIT:
+        case COMMAND:
             {
-                requestQuit = true;
-                continue;
+                switch(parseCommand(rawInput)) {
+                case REQUEST_QUIT:
+                    {
+                        requestQuit = true;
+                        continue;
+                    }
+                case REQUEST_RESET:
+                    {
+                        resetTowers(towers, NUM_DISKS);
+                        moves = 0;
+                        status = "Good luck!";
+                        question = "What's your first move? ";
+                        continue;
+                    }
+                case INVALID_COMMAND:
+                    {
+                        status = "Unknown command";
+                        continue;
+                    }
+                }
             }
-        case REQUEST_RESET:
+        case INVALID_INPUT:
             {
-                resetTowers(towers, NUM_DISKS);
-                moves = 0;
-                status = "Good luck!";
-                question = "What's your first move? ";
+                status = "Invalid input";
                 continue;
             }
         }
 
-        switch(checkForValidMove(rawInput, towers)) {
+        switch(parseMove(rawInput, towers)) {
         case VALID_MOVE:
             {
                 doMove(rawInput, towers);
