@@ -96,13 +96,14 @@ INPUT_TYPE parseInput(const std::vector<std::string>& input)
 }
 
 
-enum COMMAND_TYPE { REQUEST_QUIT, REQUEST_RESET, INVALID_COMMAND };
+enum COMMAND_TYPE { REQUEST_QUIT, REQUEST_RESET, INVALID_COMMAND, REQUEST_HELP };
 
 COMMAND_TYPE parseCommand(const std::vector<std::string>& input)
 {
     std::string command(input.front());
     if(command == "quit") return REQUEST_QUIT;
     if(command == "reset") return REQUEST_RESET;
+    if(command == "help") return REQUEST_HELP;
     return INVALID_COMMAND;
 }
 
@@ -136,7 +137,7 @@ int main(int argc, char* argv[])
     bool requestQuit = false;
     bool won = false;
     std::string status, question, rawInput;
-    status = "Good luck!";
+    status = "Type \"help\" at any time for instructions. Good luck!";
     question = "What's your first move? ";
     while(!(requestQuit || won)) {
         drawTowers(towers, tower_drawer);
@@ -160,8 +161,30 @@ int main(int argc, char* argv[])
                     {
                         resetTowers(towers, NUM_DISKS);
                         moves = 0;
-                        status = "Good luck!";
+                        status = "Type \"help\" at any time for instructions. Good luck!";
                         question = "What's your first move? ";
+                        continue;
+                    }
+                case REQUEST_HELP:
+                    {
+                        system("clear");
+                        std::cout << "The goal of Towers is to move all the disks from the leftmost rod to the rightmost rod.\n";
+                        std::cout << "Sounds easy, right? But not so fast!\n";
+                        std::cout << "You can only move the topmost disk from any tower.\n";
+                        std::cout << "On top of that, you can't put a larger disk on top of a smaller one!\n";
+                        std::cout << "\n";
+                        tower_drawer.draw(towers);
+                        std::cout << "\n";
+                        std::cout << "To move a disk from one rod to another, type the rod number you want to\n";
+                        std::cout << "move from, then the rod number to move to, separated by a space. Like this:\n";
+                        std::cout << "\n";
+                        std::cout << "1 2\n";
+                        std::cout << "\n";
+                        std::cout << "This would move the topmost disk from the left rod to the middle rod.\n";
+                        std::cout << "If you can move all the disks to the leftmost rod, you win!\n";
+                        std::cout << "\n";
+                        std::cout << "Press \"Enter\" to go back...";
+                        getRawInput();
                         continue;
                     }
                 case INVALID_COMMAND:

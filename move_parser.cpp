@@ -13,18 +13,19 @@ TOWER_MOVE parseMove(const std::vector<std::string>& input, const std::vector<To
     long int from, to;
     PARSE_LONG_RESULT fromResult = parseLong(input.at(0).c_str(), &from);
     PARSE_LONG_RESULT toResult = parseLong(input.at(1).c_str(), &to);
+
+    const TOWER_MOVE PROBLEM_MOVE = { 0, 0, INVALID_MOVE_SYNTAX };
+
     if(!(fromResult == SUCCESS && toResult == SUCCESS)) {
-        TOWER_MOVE result = { 0, 0, INVALID_MOVE_SYNTAX };
-        return result;
+        return PROBLEM_MOVE;
     }
     if((from < 1) || (from > 3)) {
-        TOWER_MOVE result = { 0, 0, INVALID_MOVE_SYNTAX };
-        return result;
+        return PROBLEM_MOVE;
     }
     if((to < 1) || (to > 3)) {
-        TOWER_MOVE result = { 0, 0, INVALID_MOVE_SYNTAX };
-        return result;
+        return PROBLEM_MOVE;
     }
+
     from--;
     to--;
     const Tower& towerFrom = towers.at(from);
