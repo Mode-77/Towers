@@ -179,14 +179,14 @@ int main(int argc, char* argv[])
                     }
                 case INVALID_COMMAND:
                     {
-                        status = "Unknown command";
+                        status = "No such command...";
                         continue;
                     }
                 }
             }
         case INVALID_INPUT:
             {
-                status = "Invalid input";
+                status = "Huh?";
                 continue;
             }
         }
