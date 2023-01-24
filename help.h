@@ -19,4 +19,6 @@
 // The passed in towers will be shown as a demonstration in the help text.
 void showHelpText(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer);
 
+void showCommandsHelp();
+
 #endif

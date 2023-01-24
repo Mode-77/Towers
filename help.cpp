@@ -36,3 +36,13 @@ void showHelpText(const std::vector<Tower>& towers, const TowerDrawer& towerDraw
     std::cout << "This would move the topmost disk from the left rod to the middle rod.\n";
     std::cout << "If you can move all the disks to the leftmost rod, you win!";
 }
+
+// Prints the commands help text.
+void showCommandsHelp()
+{
+    std::cout << "Commands\n";
+    std::cout << "\n";
+    std::cout << "quit       Quit the game\n";
+    std::cout << "help       Show the game explanation, rules, and commands\n";
+    std::cout << "reset      Start the game over again";
+}

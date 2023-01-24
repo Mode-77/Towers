@@ -168,7 +168,12 @@ int main(int argc, char* argv[])
                         system("clear");
                         showHelpText(tutorialTowers, tutorialTowerDrawer);
                         std::cout << "\n\n";
-                        std::cout << "Press \"Enter\" to go back...";
+                        std::cout << "Press \"Enter\" for the list of commands...";
+                        getRawInput();
+                        system("clear");
+                        showCommandsHelp();
+                        std::cout << "\n\n";
+                        std::cout << "Press \"Enter\" to go back to the game...";
                         getRawInput();
                         continue;
                     }
