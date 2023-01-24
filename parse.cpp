@@ -1,6 +1,24 @@
+/*
+    Author: Jared Thomas
+    Date:   Sunday, January 22, 2023
+
+    This module provides string processing and parsing utilities.
+*/
+
+#include <iostream>
+#include <vector>
+#include <string>
 #include <cstring>
 #include <climits>
 #include "parse.h"
+
+// Retrieves input from the console and returns the result as a string
+std::string getRawInput()
+{
+    std::string input;
+    std::getline(std::cin, input);
+    return input;
+}
 
 // Splits the string on the space (' ') character. Ignores leading spaces.
 // Returns a vector containing the tokens.

@@ -14,6 +14,7 @@
 
 #include "parse.h"
 #include "move_parser.h"
+#include "help.h"
 #include "Tower.h"
 #include "TowerDrawer.h"
 
@@ -60,14 +61,6 @@ void printStatus(const std::string& statusMessage)
 void askQuestion(const std::string& question)
 {
     std::cout << question;
-}
-
-
-std::string getRawInput()
-{
-    std::string input;
-    std::getline(std::cin, input);
-    return input;
 }
 
 
@@ -126,12 +119,17 @@ void resetTowers(std::vector<Tower>& towers, int totalDisks)
 int main(int argc, char* argv[])
 {
     const int NUM_DISKS = (argc == 2) ? std::stoi(argv[1]) : 3;
+    const int NUM_TUTORIAL_DISKS = 3;
+    const int TUTORIAL_ROD_HEIGHT = NUM_TUTORIAL_DISKS + 3;
+    const int GOAL_TOWER_VECTOR_INDEX = 2;
 
-    std::vector<Tower> towers;
+    std::vector<Tower> towers;          // Actual game rods
+    TowerDrawer tower_drawer(NUM_DISKS + 3);
     resetTowers(towers, NUM_DISKS);
 
-    const int GOAL_TOWER_INDEX = 2;
-    TowerDrawer tower_drawer(NUM_DISKS + 3);
+    std::vector<Tower> tutorialTowers;  // Appears on the help text
+    TowerDrawer tutorialTowerDrawer(TUTORIAL_ROD_HEIGHT);
+    resetTowers(tutorialTowers, NUM_TUTORIAL_DISKS);
 
     int moves = 0;
     bool requestQuit = false;
@@ -168,21 +166,8 @@ int main(int argc, char* argv[])
                 case REQUEST_HELP:
                     {
                         system("clear");
-                        std::cout << "The goal of Towers is to move all the disks from the leftmost rod to the rightmost rod.\n";
-                        std::cout << "Sounds easy, right? But not so fast!\n";
-                        std::cout << "You can only move the topmost disk from any tower.\n";
-                        std::cout << "On top of that, you can't put a larger disk on top of a smaller one!\n";
-                        std::cout << "\n";
-                        tower_drawer.draw(towers);
-                        std::cout << "\n";
-                        std::cout << "To move a disk from one rod to another, type the rod number you want to\n";
-                        std::cout << "move from, then the rod number to move to, separated by a space. Like this:\n";
-                        std::cout << "\n";
-                        std::cout << "1 2\n";
-                        std::cout << "\n";
-                        std::cout << "This would move the topmost disk from the left rod to the middle rod.\n";
-                        std::cout << "If you can move all the disks to the leftmost rod, you win!\n";
-                        std::cout << "\n";
+                        showHelpText(tutorialTowers, tutorialTowerDrawer);
+                        std::cout << "\n\n";
                         std::cout << "Press \"Enter\" to go back...";
                         getRawInput();
                         continue;
@@ -207,7 +192,7 @@ int main(int argc, char* argv[])
             {
                 doMove(towerMove, towers);
                 moves++;
-                won = checkForGameWon(towers.at(GOAL_TOWER_INDEX), NUM_DISKS);
+                won = checkForGameWon(towers.at(GOAL_TOWER_VECTOR_INDEX), NUM_DISKS);
                 status = "";
                 question = "What's your next move? ";
                 break;

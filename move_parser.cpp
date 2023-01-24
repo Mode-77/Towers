@@ -1,3 +1,8 @@
+/*
+    Author: Jared Thomas
+    Date:   Sunday, January 22, 2023
+*/
+
 #include <vector>
 #include <string>
 
