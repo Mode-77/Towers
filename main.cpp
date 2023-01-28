@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
 {
     const int NUM_DISKS = (argc == 2) ? std::stoi(argv[1]) : 3;
     const int NUM_TUTORIAL_DISKS = 3;
-    const int TUTORIAL_ROD_HEIGHT = NUM_TUTORIAL_DISKS + 3;
+    const int TUTORIAL_ROD_HEIGHT = NUM_TUTORIAL_DISKS + 2;
     const int GOAL_TOWER_VECTOR_INDEX = 2;
 
     std::vector<Tower> towers;          // Actual game rods

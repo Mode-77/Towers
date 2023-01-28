@@ -29,7 +29,6 @@ void showHelpText(const std::vector<Tower>& towers, const TowerDrawer& towerDraw
     std::cout << "Sounds easy, right? But not so fast!\n";
     std::cout << "You can only move the topmost disk from any tower.\n";
     std::cout << "On top of that, you can't put a larger disk on top of a smaller one!\n";
-    std::cout << "\n";
     towerDrawer.draw(towers);
     std::cout << "\n";
     std::cout << "To move a disk from one rod to another, type the rod number you want to\n";
@@ -38,7 +37,7 @@ void showHelpText(const std::vector<Tower>& towers, const TowerDrawer& towerDraw
     std::cout << "1 2\n";
     std::cout << "\n";
     std::cout << "This would move the topmost disk from the left rod to the middle rod.\n";
-    std::cout << "If you can move all the disks to the leftmost rod, you win!";
+    std::cout << "If you can move all the disks to the rightmost rod, you win!";
 }
 
 // Prints the commands help text.
