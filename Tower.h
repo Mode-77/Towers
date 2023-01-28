@@ -3,8 +3,6 @@
 #include "Disk.h"
 #include <vector>
 
-#include "unit_tests.h"
-
 class Tower {
 public:
     Tower();

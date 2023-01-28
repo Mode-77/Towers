@@ -10,8 +10,6 @@
 #include <cstring>
 #include <cmath>
 
-#include "defines.h"
-
 #include "parse.h"
 #include "move_parser.h"
 #include "help.h"
