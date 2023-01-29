@@ -114,6 +114,15 @@ void resetTowers(std::vector<Tower>& towers, int totalDisks)
 }
 
 
+void resetGame(std::vector<Tower>& towers, int numDisks, int& moves, std::string& statusMessage, std::string& prompt)
+{
+    resetTowers(towers, numDisks);
+    moves = 0;
+    statusMessage = "Type \"help\" at any time for instructions. Good luck!";
+    prompt = "What's your first move? ";
+}
+
+
 bool askPlayAgain()
 {
     char inputChar;
@@ -166,10 +175,7 @@ int main(int argc, char* argv[])
                     }
                 case REQUEST_RESET:
                     {
-                        resetTowers(towers, NUM_DISKS);
-                        moves = 0;
-                        status = "Type \"help\" at any time for instructions. Good luck!";
-                        question = "What's your first move? ";
+                        resetGame(towers, NUM_DISKS, moves, status, question);
                         continue;
                     }
                 case REQUEST_HELP:
@@ -213,10 +219,7 @@ int main(int argc, char* argv[])
                     std::cout << "\n\n";
                     gameOver = !askPlayAgain();
                     if(!gameOver) {
-                        resetTowers(towers, NUM_DISKS);
-                        moves = 0;
-                        status = "Type \"help\" at any time for instructions. Good luck!";
-                        question = "What's your first move? ";
+                        resetGame(towers, NUM_DISKS, moves, status, question);
                     }
                     continue;
                 }
