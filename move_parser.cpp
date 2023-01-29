@@ -1,6 +1,8 @@
 /*
     Author: Jared Thomas
     Date:   Sunday, January 22, 2023
+
+    This module provides higher-order parsing for Towers moves.
 */
 
 #include <vector>
@@ -10,15 +12,13 @@
 #include "parse.h"
 #include "Tower.h"
 
-// 0 = Input is a valid move
-// 1 = Taking from a diskless tower
-// 2 = Putting a larger disk on a smaller disk
-TOWER_MOVE parseMove(const std::vector<std::string>& input, const std::vector<Tower>& towers)
+TOWER_MOVE parseMove(const std::vector<std::string>& tokens, const std::vector<Tower>& towers)
 {
     long int from, to;
-    PARSE_LONG_RESULT fromResult = parseLong(input.at(0).c_str(), &from);
-    PARSE_LONG_RESULT toResult = parseLong(input.at(1).c_str(), &to);
+    PARSE_LONG_RESULT fromResult = parseLong(tokens.at(0).c_str(), &from);
+    PARSE_LONG_RESULT toResult = parseLong(tokens.at(1).c_str(), &to);
 
+    // Return this when processing the move would result in a fatal error.
     const TOWER_MOVE PROBLEM_MOVE = { 0, 0, INVALID_MOVE_SYNTAX };
 
     if(!(fromResult == SUCCESS && toResult == SUCCESS)) {

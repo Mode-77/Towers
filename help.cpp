@@ -11,7 +11,6 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "parse.h"
 #include "Tower.h"
 #include "TowerDrawer.h"
 
