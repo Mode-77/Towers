@@ -37,7 +37,7 @@ void printResults(size_t num_disks, unsigned moves)
     std::cout << "Best possible is "\
         << leastPossible(num_disks) << " moves\n";
 
-    std::cout << "Your score: " << getScore(num_disks, moves) << "%\n";
+    std::cout << "Your score: " << getScore(num_disks, moves) << "%";
 }
 
 
@@ -114,6 +114,17 @@ void resetTowers(std::vector<Tower>& towers, int totalDisks)
 }
 
 
+bool askPlayAgain()
+{
+    char inputChar;
+    do {
+        std::cout << "Do you want to play again? (y/n): ";
+        std::cin >> inputChar;
+    } while(!(inputChar == 'y' || inputChar == 'n'));
+    return inputChar == 'y';
+}
+
+
 int main(int argc, char* argv[])
 {
     const int NUM_DISKS = (argc == 2) ? std::stoi(argv[1]) : 3;
@@ -131,11 +142,11 @@ int main(int argc, char* argv[])
 
     int moves = 0;
     bool requestQuit = false;
-    bool won = false;
+    bool gameOver = false;
     std::string status, question, rawInput;
     status = "Type \"help\" at any time for instructions. Good luck!";
     question = "What's your first move? ";
-    while(!(requestQuit || won)) {
+    while(!(requestQuit || gameOver)) {
         drawTowers(towers, tower_drawer);
         printStatus(status);
         askQuestion(question);
@@ -195,7 +206,20 @@ int main(int argc, char* argv[])
             {
                 doMove(towerMove, towers);
                 moves++;
-                won = checkForGameWon(towers.at(GOAL_TOWER_VECTOR_INDEX), NUM_DISKS);
+                if(checkForGameWon(towers.at(GOAL_TOWER_VECTOR_INDEX), NUM_DISKS)) {
+                    drawTowers(towers, tower_drawer);
+                    printStatus("You win!");
+                    printResults(NUM_DISKS, moves);
+                    std::cout << "\n\n";
+                    gameOver = !askPlayAgain();
+                    if(!gameOver) {
+                        resetTowers(towers, NUM_DISKS);
+                        moves = 0;
+                        status = "Type \"help\" at any time for instructions. Good luck!";
+                        question = "What's your first move? ";
+                    }
+                    continue;
+                }
                 status = "";
                 question = "What's your next move? ";
                 break;
@@ -216,12 +240,6 @@ int main(int argc, char* argv[])
                 break;
             }
         }
-    }
-
-    if(won) {
-        drawTowers(towers, tower_drawer);
-        printStatus("You win!");
-        printResults(NUM_DISKS, moves);
     }
 
     return 0;
