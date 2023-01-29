@@ -10,6 +10,7 @@
 #include <cstring>
 #include <cmath>
 
+#include "screen.h"
 #include "parse.h"
 #include "move_parser.h"
 #include "help.h"
@@ -43,7 +44,7 @@ void printResults(size_t num_disks, unsigned moves)
 
 void drawTowers(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer)
 {
-    system("clear");
+    clearScreen();
     towerDrawer.draw(towers);
 }
 
@@ -180,12 +181,12 @@ int main(int argc, char* argv[])
                     }
                 case REQUEST_HELP:
                     {
-                        system("clear");
+                        clearScreen();
                         showHelpText(tutorialTowers, tutorialTowerDrawer);
                         std::cout << "\n\n";
                         std::cout << "Press \"Enter\" for the list of commands...";
                         getRawInput();
-                        system("clear");
+                        clearScreen();
                         showCommandsHelp();
                         std::cout << "\n\n";
                         std::cout << "Press \"Enter\" to go back to the game...";
