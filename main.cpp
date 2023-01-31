@@ -19,9 +19,13 @@
 
 
 
-unsigned leastPossible(size_t num_disks)
+/*
+    Returns the least possible number of moves required to win a game (perfect game).
+    This is (2^d - 1), where d is the number of disks.
+*/
+unsigned leastPossible(size_t numDisks)
 {
-    return pow(2, num_disks) - 1;
+    return (1U << numDisks) - 1;
 }
 
 
