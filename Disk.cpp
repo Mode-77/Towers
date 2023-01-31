@@ -2,47 +2,44 @@
 #include <cassert>
 #include <iostream>
 
-
-using namespace std;
-
-Disk::Disk(const int size): size_(size)
+Disk::Disk(unsigned size): size_(size)
 {
     assert(size_ > 0);
 }
 
 void Disk::draw() const
 {
-    for(int i = 0; i < (2 * size() + 1); i++) {
-        cout << '+';
+    for(unsigned i = 0; i < (2 * size() + 1); i++) {
+        std::cout << '+';
     }
 }
 
-int Disk::size() const { return size_; }
-
+unsigned Disk::size() const { return size_; }
 
 void draw_solid_style(const Disk d)
 {
-    cout << '[';
-    int j = 2 * d.size() + 1;
+    std::cout << '[';   // Left edge of the disk
+    unsigned j = 2 * d.size() + 1;
     if(d.size() >= 10 && d.size() <= 99) j--;
-    for(int i = 0; i < j; i++) {
-        if(i == (2 * d.size() + 1) / 2) cout << d.size();
-        else cout << ' ';
+    for(unsigned i = 0; i < j; i++) {
+        const unsigned DISK_CENTER = (2 * d.size() + 1) / 2;
+        if(i == DISK_CENTER) std::cout << d.size();
+        else std::cout << ' ';
     }
-    cout << ']';
+    std::cout << ']';   // Right edge of the disk
 }
-
 
 void draw_slash_bracket_style(const Disk d)
 {
-    cout << '[';
-    int j = 2 * d.size() + 1;
+    std::cout << '[';   // Left edge of the disk
+    unsigned j = 2 * d.size() + 1;
     if(d.size() >= 10 && d.size() <= 99) j--;
-    for(int i = 0; i < j; i++) {
-        if(i == (2 * d.size() + 1) / 2) cout << d.size();
-        else if(i == ((2 * d.size() + 1) / 2) - 1) cout << ' ';
-        else if(i == ((2 * d.size() + 1) / 2) + 1) cout << ' ';
-        else cout << '/';
+    for(unsigned i = 0; i < j; i++) {
+        const unsigned DISK_CENTER = (2 * d.size() + 1) / 2;
+        if(i == DISK_CENTER) std::cout << d.size();
+        else if(i == (DISK_CENTER - 1)) std::cout << ' ';
+        else if(i == (DISK_CENTER + 1)) std::cout << ' ';
+        else std::cout << '/';
     }
-    cout << ']';
+    std::cout << ']';   // Right edge of the disk
 }

@@ -1,15 +1,29 @@
-﻿#pragma once
+﻿#ifndef DISK_H
+#define DISK_H
 
 struct Disk {
-    // size > 0
-    Disk(const int size);
+    /*
+        Constructs a disk with a size
 
+        size > 0
+    */
+    Disk(unsigned size);
+
+    /*
+        Draws the disk to standard output
+    */
     void draw() const;
-    int size() const;
+
+    /*
+        Returns the size of the disk
+    */
+    unsigned size() const;
 
 private:
-    int size_;
+    unsigned size_;
 };
 
-void draw_solid_style(const Disk);
-void draw_slash_bracket_style(const Disk);
+void draw_solid_style(Disk);
+void draw_slash_bracket_style(Disk);
+
+#endif
