@@ -14,14 +14,16 @@ public:
     Tower();
 
     /*
-        Constructs a tower with an initial number of disks
+        Constructs a tower with an initial number of disks.
+
+        The disks will be stacked in increasing order from top to bottom.
     */
     Tower(unsigned num_disks);
 
     /*
         Returns the number of disks on the tower
     */
-    size_t num_disks() const;
+    unsigned num_disks() const;
 
     /*
         Returns the size of the topmost disk on the tower
@@ -34,14 +36,14 @@ public:
     unsigned size_of_largest_disk() const;
 
     /*
-        Returns the size of the disk at a specific location on the tower.
+        Returns the size of a disk at a specific location on the tower.
 
         0 is the bottom of the tower.
     */
-    unsigned size_of_disk_at(size_t place) const;
+    unsigned size_of_disk_at(unsigned index) const;
 
     /*
-        Returns true if the tower has no disks on it, returns false otherwise.
+        Returns true if the tower has no disks on it, returns false otherwise
     */
     bool is_diskless() const;
 
@@ -51,12 +53,12 @@ public:
     bool are_strictly_decreasing() const;
 
     /*
-        Returns a reference to a specific disk on the tower.
+        Returns a reference to a specific disk on the tower
     */
-    const Disk& disk_at(size_t index) const;
+    const Disk& disk_at(unsigned index) const;
 
     /*
-        Moves the topmost disk from this tower to another tower.
+        Moves the topmost disk from this tower to another tower
     */
     void top_to_top(Tower& dest_tower);
 
@@ -69,6 +71,9 @@ private:
     std::vector<Disk> disks_;
 };
 
-size_t highestTower(const std::vector<Tower>& towers);
+/*
+    Returns the number of disks on the tower with the most disks in the vector
+*/
+unsigned highestTower(const std::vector<Tower>& towers);
 
 #endif

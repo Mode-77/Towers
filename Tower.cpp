@@ -1,6 +1,7 @@
 ﻿#include "Tower.h"
 #include "Disk.h"
 #include <cassert>
+#include <climits>
 #include <iostream>
 
 Tower::Tower()
@@ -18,7 +19,12 @@ Tower::Tower(unsigned num_disks)
 }
 
 
-size_t Tower::num_disks() const { return disks_.size(); }
+unsigned Tower::num_disks() const
+{
+    // The cast is okay here since the number of disks on the tower is
+    // guaranteed to be [0, UINT_MAX]
+    return (unsigned)(disks_.size());
+}
 
 
 unsigned Tower::size_of_top() const
@@ -32,17 +38,17 @@ unsigned Tower::size_of_largest_disk() const
 {
     assert(!is_diskless());
     unsigned largest = size_of_disk_at(0);
-    for(size_t i = 0; i < num_disks(); i++) {
+    for(unsigned i = 0; i < num_disks(); i++) {
         if(size_of_disk_at(i) > largest) largest = size_of_disk_at(i);
     }
     return largest;
 }
 
 
-unsigned Tower::size_of_disk_at(size_t place) const
+unsigned Tower::size_of_disk_at(unsigned index) const
 {
     assert(!is_diskless());
-    return disks_.at(place).size();
+    return disks_.at(index).size();
 }
 
 
@@ -53,23 +59,24 @@ bool Tower::are_strictly_decreasing() const
 {
     assert(!is_diskless());
     unsigned expected = size_of_disk_at(0);
-    for(size_t j = 0; j < num_disks(); j++) {
-        if(size_of_disk_at(j) != expected) return false;
+    for(unsigned i = 0; i < num_disks(); i++) {
+        if(size_of_disk_at(i) != expected) return false;
         expected--;
     }
     return true;
 }
 
 
-const Disk& Tower::disk_at(size_t i) const
+const Disk& Tower::disk_at(unsigned index) const
 {
     assert(!is_diskless());
-    return disks_.at(i);
+    return disks_.at(index);
 }
 
 
 void Tower::top_to_top(Tower& dest_tower)
 {
+    assert(dest_tower.num_disks() < UINT_MAX);
     assert(!is_diskless());
     Disk diskToMove = disks_.back();
     disks_.pop_back();
@@ -81,18 +88,17 @@ bool Tower::compare(const Tower& T) const
 {
     if(T.num_disks() != num_disks()) return false;
     if(T.is_diskless() && is_diskless()) return true;
-    for(size_t disk = 0; disk < num_disks(); disk++) {
-        if(T.disk_at(disk).size() != disk_at(disk).size()) return false;
+    for(unsigned i = 0; i < num_disks(); i++) {
+        if(T.disk_at(i).size() != disk_at(i).size()) return false;
     }
     return true;
 }
 
 
-// Returns the number of disks on the tower in the vector with the most disks
-size_t highestTower(const std::vector<Tower>& towers)
+unsigned highestTower(const std::vector<Tower>& towers)
 {
     assert(!towers.empty());
-    size_t highest = 0;
+    unsigned highest = 0;
     for(size_t i = 0; i < towers.size(); i++) {
         if(towers.at(i).num_disks() > highest) {
             highest = towers.at(i).num_disks();
