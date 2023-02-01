@@ -13,7 +13,7 @@ public:
     size_t draw(const std::vector<Tower>&) const;
 
 private:
-    void draw_spaces(const int num_spaces = 1) const;
+    void draw_spaces(unsigned num_spaces = 1) const;
     int num_slashes(const int disk_size) const;
     int num_chars(const int disk_size) const;
     int center_of(const int disk_size) const;

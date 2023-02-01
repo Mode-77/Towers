@@ -38,22 +38,9 @@ size_t TowerDrawer::draw(const std::vector<Tower>& towers) const
 }
 
 
-int to_signed(const unsigned x)
+void TowerDrawer::draw_spaces(unsigned n) const
 {
-    if(x <= INT_MAX)
-        return static_cast<int>(x);
-
-    if(x >= INT_MIN)
-        return static_cast<int>(x - INT_MIN) + INT_MIN;
-
-    throw x; // Or whatever else you like
-}
-
-
-void TowerDrawer::draw_spaces(const int N) const
-{
-    assert(N >= 0);
-    for(int i = 0; i < N; i++) cout << ' ';
+    for(; n > 0; n--) cout << ' ';
 }
 
 
