@@ -3,21 +3,17 @@
 #include <cassert>
 #include <iostream>
 
-using namespace std;
-
-
-
 Tower::Tower()
 {
 
 }
 
 
-Tower::Tower(size_t num_disks)
+Tower::Tower(unsigned num_disks)
 {
-    assert(num_disks >= 0);
-    for(int i = num_disks; i > 0; i--) {
-        disks_.push_back(Disk(i));
+    while(num_disks > 0) {
+        disks_.push_back(Disk(num_disks));
+        num_disks--;
     }
 }
 
@@ -25,25 +21,25 @@ Tower::Tower(size_t num_disks)
 size_t Tower::num_disks() const { return disks_.size(); }
 
 
-int Tower::size_of_top() const
+unsigned Tower::size_of_top() const
 {
     assert(!is_diskless());
     return disks_.back().size();
 }
 
 
-int Tower::size_of_largest_disk() const
+unsigned Tower::size_of_largest_disk() const
 {
     assert(!is_diskless());
-    int largest = 0;
-    for(size_t u = 0; u < num_disks(); u++) {
-        if(size_of_disk_at(u) > largest) largest = size_of_disk_at(u);
+    unsigned largest = size_of_disk_at(0);
+    for(size_t i = 0; i < num_disks(); i++) {
+        if(size_of_disk_at(i) > largest) largest = size_of_disk_at(i);
     }
     return largest;
 }
 
 
-int Tower::size_of_disk_at(size_t place) const
+unsigned Tower::size_of_disk_at(size_t place) const
 {
     assert(!is_diskless());
     return disks_.at(place).size();
@@ -56,7 +52,7 @@ bool Tower::is_diskless() const { return num_disks() == 0; }
 bool Tower::are_strictly_decreasing() const
 {
     assert(!is_diskless());
-    size_t expected = num_disks();
+    unsigned expected = size_of_disk_at(0);
     for(size_t j = 0; j < num_disks(); j++) {
         if(size_of_disk_at(j) != expected) return false;
         expected--;
