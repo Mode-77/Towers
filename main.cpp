@@ -23,19 +23,19 @@
     Returns the least possible number of moves required to win a game (perfect game).
     This is (2^d - 1), where d is the number of disks.
 */
-unsigned leastPossible(size_t numDisks)
+unsigned leastPossible(unsigned numDisks)
 {
     return (1U << numDisks) - 1;
 }
 
 
-double getScore(size_t num_disks, unsigned moves)
+unsigned getScore(unsigned num_disks, unsigned moves)
 {
-    return round(100.0 * leastPossible(num_disks) / moves);
+    return (unsigned)(round(100.0 * leastPossible(num_disks) / moves));
 }
 
 
-void printResults(size_t num_disks, unsigned moves)
+void printResults(unsigned num_disks, unsigned moves)
 {
     std::cout << "You finished in " << moves << " moves\n";
 
@@ -104,13 +104,13 @@ COMMAND_TYPE parseCommand(const std::vector<std::string>& input)
 }
 
 
-bool checkForGameWon(const Tower& goalTower, int totalDisks)
+bool checkForGameWon(const Tower& goalTower, unsigned totalDisks)
 {
     return goalTower.num_disks() == totalDisks;
 }
 
 
-void resetTowers(std::vector<Tower>& towers, int totalDisks)
+void resetTowers(std::vector<Tower>& towers, unsigned totalDisks)
 {
     towers.clear();
     towers.push_back(Tower(totalDisks));
@@ -119,7 +119,7 @@ void resetTowers(std::vector<Tower>& towers, int totalDisks)
 }
 
 
-void resetGame(std::vector<Tower>& towers, int numDisks, int& moves, std::string& statusMessage, std::string& prompt)
+void resetGame(std::vector<Tower>& towers, unsigned numDisks, unsigned& moves, std::string& statusMessage, std::string& prompt)
 {
     resetTowers(towers, numDisks);
     moves = 0;
@@ -142,9 +142,9 @@ bool askPlayAgain()
 int main(int argc, char* argv[])
 {
     const int NUM_DISKS = (argc == 2) ? std::stoi(argv[1]) : 3;
-    const int NUM_TUTORIAL_DISKS = 3;
-    const int TUTORIAL_ROD_HEIGHT = NUM_TUTORIAL_DISKS + 2;
-    const int GOAL_TOWER_VECTOR_INDEX = 2;
+    const unsigned NUM_TUTORIAL_DISKS = 3;
+    const unsigned TUTORIAL_ROD_HEIGHT = NUM_TUTORIAL_DISKS + 2;
+    const unsigned GOAL_TOWER_VECTOR_INDEX = 2;
 
     std::vector<Tower> towers;          // Actual game rods
     TowerDrawer tower_drawer(NUM_DISKS + 3);
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
     TowerDrawer tutorialTowerDrawer(TUTORIAL_ROD_HEIGHT);
     resetTowers(tutorialTowers, NUM_TUTORIAL_DISKS);
 
-    int moves = 0;
+    unsigned moves = 0;
     bool requestQuit = false;
     bool gameOver = false;
     std::string status, question, rawInput;
