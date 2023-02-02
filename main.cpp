@@ -10,6 +10,7 @@
 #include <cstring>
 #include <cmath>
 
+#include "game.h"
 #include "screen.h"
 #include "parse.h"
 #include "syntax_parser.h"
@@ -17,56 +18,6 @@
 #include "help.h"
 #include "Tower.h"
 #include "TowerDrawer.h"
-
-
-
-/*
-    Returns the least possible number of moves required to win a game (perfect game).
-    This is (2^d - 1), where d is the number of disks.
-*/
-unsigned leastPossible(unsigned numDisks)
-{
-    return (1U << numDisks) - 1;
-}
-
-
-unsigned getScore(unsigned num_disks, unsigned moves)
-{
-    return (unsigned)(round(100.0 * leastPossible(num_disks) / moves));
-}
-
-
-void printResults(unsigned num_disks, unsigned moves)
-{
-    std::cout << "You finished in " << moves << " moves\n";
-
-    std::cout << "Best possible is "\
-        << leastPossible(num_disks) << " moves\n";
-
-    std::cout << "Your score: " << getScore(num_disks, moves) << "%";
-}
-
-
-void drawTowers(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer)
-{
-    clearScreen();
-    towerDrawer.draw(towers);
-}
-
-
-void printStatus(const std::string& statusMessage)
-{
-    std::cout << "\n";
-    std::cout << statusMessage << "\n";
-    std::cout << "\n";
-}
-
-
-void askQuestion(const std::string& question)
-{
-    std::cout << question;
-}
-
 
 enum COMMAND_TYPE { REQUEST_QUIT, REQUEST_RESET, INVALID_COMMAND, REQUEST_HELP };
 
@@ -78,42 +29,6 @@ COMMAND_TYPE parseCommand(const std::vector<std::string>& input)
     if(command == "help") return REQUEST_HELP;
     return INVALID_COMMAND;
 }
-
-
-bool checkForGameWon(const Tower& goalTower, unsigned totalDisks)
-{
-    return goalTower.num_disks() == totalDisks;
-}
-
-
-void resetTowers(std::vector<Tower>& towers, unsigned totalDisks)
-{
-    towers.clear();
-    towers.push_back(Tower(totalDisks));
-    towers.push_back(Tower());
-    towers.push_back(Tower());
-}
-
-
-void resetGame(std::vector<Tower>& towers, unsigned numDisks, unsigned& moves, std::string& statusMessage, std::string& prompt)
-{
-    resetTowers(towers, numDisks);
-    moves = 0;
-    statusMessage = "Type \"help\" at any time for instructions. Good luck!";
-    prompt = "What's your first move? ";
-}
-
-
-bool askPlayAgain()
-{
-    char inputChar;
-    do {
-        std::cout << "Do you want to play again? (y/n): ";
-        std::cin >> inputChar;
-    } while(!(inputChar == 'y' || inputChar == 'n'));
-    return inputChar == 'y';
-}
-
 
 int main(int argc, char* argv[])
 {
