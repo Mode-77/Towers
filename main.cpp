@@ -76,16 +76,7 @@ int main(int argc, char* argv[])
                     }
                 case REQUEST_HELP:
                     {
-                        clearScreen();
                         showHelpText(tutorialTowers, tutorialTowerDrawer);
-                        std::cout << "\n\n";
-                        std::cout << "Press \"Enter\" for the list of commands...";
-                        getRawInput();
-                        clearScreen();
-                        showCommandsHelp();
-                        std::cout << "\n\n";
-                        std::cout << "Press \"Enter\" to go back to the game...";
-                        getRawInput();
                         continue;
                     }
                 case INVALID_COMMAND:
@@ -94,6 +85,7 @@ int main(int argc, char* argv[])
                         continue;
                     }
                 }
+                break;  // This only pacifies the compiler; it cannot really be reached.
             }
         case INVALID_INPUT:
             {

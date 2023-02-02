@@ -13,12 +13,22 @@
 #include "Tower.h"
 #include "TowerDrawer.h"
 
-// Clears the terminal and prints the help text explaining the rules and goal
-// of the game.
-//
-// The passed in towers will be shown as a demonstration in the help text.
+/*
+    Clears the screen and starts the help texts which come in two screens.
+
+    The passed in towers will be shown as a demonstration in the explanation.
+*/
 void showHelpText(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer);
 
+/*
+    Shows part 1/2 of the help text which is the game objective, rules, and
+    inputs explanation
+*/
+void showExpanation(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer);
+
+/*
+    Shows part 2/2 of the help text which is the list of game commands
+*/
 void showCommandsHelp();
 
 #endif

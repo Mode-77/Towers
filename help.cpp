@@ -13,12 +13,24 @@
 
 #include "Tower.h"
 #include "TowerDrawer.h"
+#include "screen.h"
+#include "parse.h"
 
-// Clears the terminal and prints the help text explaining the rules and goal
-// of the game.
-//
-// The passed in towers will be shown as a demonstration in the help text.
 void showHelpText(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer)
+{
+    clearScreen();
+    showExpanation(towers, towerDrawer);
+    std::cout << "\n\n";
+    std::cout << "Press \"Enter\" for the list of commands...";
+    getRawInput();
+    clearScreen();
+    showCommandsHelp();
+    std::cout << "\n\n";
+    std::cout << "Press \"Enter\" to go back to the game...";
+    getRawInput();
+}
+
+void showExpanation(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer)
 {
     std::cout << "Towers, an adaptation of the game \"Tower of Hanoi\"\n";
     std::cout << "Nexus Game Studios, 2023\n";
@@ -39,7 +51,6 @@ void showHelpText(const std::vector<Tower>& towers, const TowerDrawer& towerDraw
     std::cout << "If you can move all the disks to the rightmost rod, you win!";
 }
 
-// Prints the commands help text.
 void showCommandsHelp()
 {
     std::cout << "Commands\n";
