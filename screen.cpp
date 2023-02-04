@@ -6,6 +6,7 @@
 */
 
 #include "screen.h"
+#include <iostream>
 
 #ifdef PLATFORM_LINUX
     #define CLEAR_SCREEN_COMMAND    "clear"
@@ -19,5 +20,6 @@
 
 void clearScreen()
 {
-    system(CLEAR_SCREEN_COMMAND);
+    std::cout << "\033[2J";
+    std::cout << "\033[1;1H";
 }

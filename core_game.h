@@ -11,6 +11,6 @@
 /*
     Starts the game with an initial number of disks
 */
-void game(unsigned numDisks);
+void game(unsigned initialDisks);
 
 #endif

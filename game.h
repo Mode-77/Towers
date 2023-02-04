@@ -74,4 +74,13 @@ void resetGame(std::vector<Tower>& towers, unsigned numDisks, unsigned& moves, s
 */
 bool askPlayAgain();
 
+/*
+    Asks the player for the number of disks they want to play with.
+
+    Blocks program flow until the player enters valid input.
+
+    Returns the number of disks the player entered.
+*/
+unsigned askNumDisks();
+
 #endif

@@ -2,7 +2,7 @@
     Author: Jared Thomas
     Date:   Sunday, January 22, 2023
 
-    This module provides string processing and parsing utilities.
+    This module provides general-purpose string processing and parsing utilities.
 */
 
 #include <iostream>
@@ -12,7 +12,6 @@
 #include <climits>
 #include "parse.h"
 
-// Retrieves input from the console and returns the result as a string
 std::string getRawInput()
 {
     std::string input;
@@ -20,8 +19,6 @@ std::string getRawInput()
     return input;
 }
 
-// Splits the string on the space (' ') character. Ignores leading spaces.
-// Returns a vector containing the tokens.
 std::vector<std::string> tokenize(const std::string& s)
 {
     // Create an intermediate string buffer
@@ -41,7 +38,6 @@ std::vector<std::string> tokenize(const std::string& s)
     return result;
 }
 
-// The input will not have leading or trailing spaces.
 PARSE_LONG_RESULT parseLong(const char* s, long* result)
 {
     const char* afterTheNumber = s + strlen(s);

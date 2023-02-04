@@ -15,32 +15,33 @@
 #include "TowerDrawer.h"
 #include "screen.h"
 #include "game.h"
+#include "game_parser.h"
 #include "parse.h"
-#include "syntax_parser.h"
-#include "move_parser.h"
 #include "help.h"
 
-static unsigned processInput(const std::vector<std::string>& tokens,
-                             bool& requestQuit,
-                             std::vector<Tower>& towers,
-                             unsigned numDisks,
-                             unsigned& moves,
-                             std::string& status,
-                             std::string& question);
+static unsigned inputState(const std::vector<std::string>& tokens,
+                           bool& requestQuit,
+                           std::vector<Tower>& towers,
+                           unsigned& numDisks,
+                           unsigned& moves,
+                           std::string& status,
+                           std::string& question);
 
 static void moveState(const std::vector<std::string>& tokens,
                       bool& gameOver,
                       std::vector<Tower>& towers,
                       const TowerDrawer& towerDrawer,
-                      unsigned numDisks,
+                      unsigned& numDisks,
                       unsigned& moves,
                       std::string& status,
                       std::string& question);
 
 const unsigned GOAL_TOWER_VECTOR_INDEX = 2;
 
-void game(unsigned numDisks)
+void game(unsigned initialDisks)
 {
+    unsigned numDisks = initialDisks;
+
     std::vector<Tower> towers;  // Actual game rods
     resetTowers(towers, numDisks);
 
@@ -59,27 +60,26 @@ void game(unsigned numDisks)
         askQuestion(question);
         std::string rawInput = getRawInput();
         std::vector<std::string> tokens = tokenize(rawInput);
-        if(processInput(tokens, requestQuit, towers, numDisks, moves, status, question)) continue;
+        if(inputState(tokens, requestQuit, towers, numDisks, moves, status, question)) continue;
         moveState(tokens, gameOver, towers, towerDrawer, numDisks, moves, status, question);
     }
 }
 
 /*
-    Calculates and returns the game score as the number of moves the player made
-    out of the minimum moves required to win
+    Performs input processing and command handling of tokens.
 
-    Returns 0 if valid input was gathered successfully, and flow can move into
-    the move state.
+    Returns 0 if the input is a tower move and should be passed on to the move
+    parser.
 
     Returns 1 if the flow should return to the beginning of the game loop.
 */
-static unsigned processInput(const std::vector<std::string>& tokens,
-                             bool& requestQuit,
-                             std::vector<Tower>& towers,
-                             unsigned numDisks,
-                             unsigned& moves,
-                             std::string& status,
-                             std::string& question)
+static unsigned inputState(const std::vector<std::string>& tokens,
+                           bool& requestQuit,
+                           std::vector<Tower>& towers,
+                           unsigned& numDisks,
+                           unsigned& moves,
+                           std::string& status,
+                           std::string& question)
 {
     const unsigned NUM_TUTORIAL_DISKS = 3;
     const unsigned TUTORIAL_ROD_HEIGHT = NUM_TUTORIAL_DISKS + 2;
@@ -93,7 +93,7 @@ static unsigned processInput(const std::vector<std::string>& tokens,
     case EMPTY_INPUT: return 1;
     case COMMAND:
         {
-            switch(parseCommand(tokens)) {
+            switch(parseCommand(tokens.front())) {
             case REQUEST_QUIT:
                 {
                     requestQuit = true;
@@ -101,6 +101,7 @@ static unsigned processInput(const std::vector<std::string>& tokens,
                 }
             case REQUEST_RESET:
                 {
+                    numDisks = askNumDisks();
                     resetGame(towers, numDisks, moves, status, question);
                     return 1;
                 }
@@ -128,13 +129,14 @@ static unsigned processInput(const std::vector<std::string>& tokens,
 }
 
 /*
-
+    Takes in tokens from the input stage and attempts to process them as tower
+    moves.
 */
 static void moveState(const std::vector<std::string>& tokens,
                       bool& gameOver,
                       std::vector<Tower>& towers,
                       const TowerDrawer& towerDrawer,
-                      unsigned numDisks,
+                      unsigned& numDisks,
                       unsigned& moves,
                       std::string& status,
                       std::string& question)
@@ -152,6 +154,7 @@ static void moveState(const std::vector<std::string>& tokens,
                 std::cout << "\n\n";
                 gameOver = !askPlayAgain();
                 if(!gameOver) {
+                    numDisks = askNumDisks();
                     resetGame(towers, numDisks, moves, status, question);
                 }
                 return;

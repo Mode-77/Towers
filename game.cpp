@@ -13,6 +13,7 @@
 #include "Tower.h"
 #include "TowerDrawer.h"
 #include "screen.h"
+#include "parse.h"
 
 unsigned leastPossible(unsigned numDisks)
 {
@@ -75,10 +76,25 @@ void resetGame(std::vector<Tower>& towers, unsigned numDisks, unsigned& moves, s
 
 bool askPlayAgain()
 {
-    char inputChar;
+    std::string input;
     do {
         std::cout << "Do you want to play again? (y/n): ";
-        std::cin >> inputChar;
-    } while(!(inputChar == 'y' || inputChar == 'n'));
-    return inputChar == 'y';
+        input = getRawInput();
+    } while(!(input == "y" || input == "n"));
+    return input == "y";
+}
+
+unsigned askNumDisks()
+{
+    std::string input;
+    long numDisks;
+    do {
+        input.clear();
+        numDisks = 0;
+        do {
+            std::cout << "How many disks do you want to play with? (1=Easiest, 8=Hardest): ";
+            input = getRawInput();
+        } while(parseLong(input.c_str(), &numDisks) != SUCCESS);
+    } while((numDisks < 1) || (numDisks > 8));
+    return (unsigned)numDisks;
 }
