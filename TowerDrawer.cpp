@@ -34,6 +34,12 @@ size_t TowerDrawer::draw(const std::vector<Tower>& towers) const
 }
 
 
+void TowerDrawer::set_pole_height(unsigned pole_height)
+{
+    pole_height_ = pole_height;
+}
+
+
 void TowerDrawer::draw_spaces(unsigned n) const
 {
     for(; n > 0; n--) std::cout << " ";

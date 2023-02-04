@@ -22,6 +22,7 @@
 static unsigned inputState(const std::vector<std::string>& tokens,
                            bool& requestQuit,
                            std::vector<Tower>& towers,
+                           TowerDrawer& towerDrawer,
                            unsigned& numDisks,
                            unsigned& moves,
                            std::string& status,
@@ -30,7 +31,7 @@ static unsigned inputState(const std::vector<std::string>& tokens,
 static void moveState(const std::vector<std::string>& tokens,
                       bool& gameOver,
                       std::vector<Tower>& towers,
-                      const TowerDrawer& towerDrawer,
+                      TowerDrawer& towerDrawer,
                       unsigned& numDisks,
                       unsigned& moves,
                       std::string& status,
@@ -191,7 +192,7 @@ void game(unsigned initialDisks)
         askQuestion(question);
         std::string rawInput = getRawInput();
         std::vector<std::string> tokens = tokenize(rawInput);
-        if(inputState(tokens, requestQuit, towers, numDisks, moves, status, question)) continue;
+        if(inputState(tokens, requestQuit, towers, towerDrawer, numDisks, moves, status, question)) continue;
         moveState(tokens, gameOver, towers, towerDrawer, numDisks, moves, status, question);
     }
 }
@@ -207,6 +208,7 @@ void game(unsigned initialDisks)
 static unsigned inputState(const std::vector<std::string>& tokens,
                            bool& requestQuit,
                            std::vector<Tower>& towers,
+                           TowerDrawer& towerDrawer,
                            unsigned& numDisks,
                            unsigned& moves,
                            std::string& status,
@@ -233,6 +235,7 @@ static unsigned inputState(const std::vector<std::string>& tokens,
             case REQUEST_RESET:
                 {
                     numDisks = askNumDisks();
+                    towerDrawer.set_pole_height(numDisks + 3);
                     resetGame(towers, numDisks, moves, status, question);
                     return 1;
                 }
@@ -266,7 +269,7 @@ static unsigned inputState(const std::vector<std::string>& tokens,
 static void moveState(const std::vector<std::string>& tokens,
                       bool& gameOver,
                       std::vector<Tower>& towers,
-                      const TowerDrawer& towerDrawer,
+                      TowerDrawer& towerDrawer,
                       unsigned& numDisks,
                       unsigned& moves,
                       std::string& status,
@@ -286,6 +289,7 @@ static void moveState(const std::vector<std::string>& tokens,
                 gameOver = !askPlayAgain();
                 if(!gameOver) {
                     numDisks = askNumDisks();
+                    towerDrawer.set_pole_height(numDisks + 3);
                     resetGame(towers, numDisks, moves, status, question);
                 }
                 return;

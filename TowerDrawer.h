@@ -12,6 +12,7 @@ public:
     unsigned pole_height() const;
     size_t draw(const Tower&) const;
     size_t draw(const std::vector<Tower>&) const;
+    void set_pole_height(unsigned pole_height);
 
 private:
     void draw_spaces(unsigned num_spaces = 1) const;
