@@ -31,3 +31,12 @@ INPUT_TYPE parseInput(const std::vector<std::string>& input)
     default: return INVALID_INPUT;
     }
 }
+
+COMMAND_TYPE parseCommand(const std::vector<std::string>& input)
+{
+    std::string command(input.front());
+    if(command == "quit") return REQUEST_QUIT;
+    if(command == "reset") return REQUEST_RESET;
+    if(command == "help") return REQUEST_HELP;
+    return INVALID_COMMAND;
+}
