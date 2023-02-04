@@ -19,23 +19,44 @@
 #include "parse.h"
 #include "help.h"
 
-static unsigned inputState(const std::vector<std::string>& tokens,
-                           bool& requestQuit,
-                           std::vector<Tower>& towers,
-                           TowerDrawer& towerDrawer,
-                           unsigned& numDisks,
-                           unsigned& moves,
-                           std::string& status,
-                           std::string& question);
+struct GameState {
+    GameState(unsigned initialDisks);
 
-static void moveState(const std::vector<std::string>& tokens,
-                      bool& gameOver,
-                      std::vector<Tower>& towers,
-                      TowerDrawer& towerDrawer,
-                      unsigned& numDisks,
-                      unsigned& moves,
-                      std::string& status,
-                      std::string& question);
+    ~GameState();
+
+    std::vector<std::string> tokens;
+    bool requestQuit;
+    bool gameOver;
+    std::vector<Tower> towers;
+    TowerDrawer towerDrawer;
+    unsigned numDisks;                  // Total number of game disks
+    unsigned moves;                     // Number of valid moves that the player has made
+    std::string status;                 // Message that prints every frame
+    std::string question;
+};
+
+GameState::GameState(unsigned initialDisks):
+    tokens(),
+    requestQuit(false),
+    gameOver(false),
+    towers(),
+    towerDrawer(initialDisks + 3),
+    numDisks(initialDisks),
+    moves(0),
+    status(),
+    question()
+{
+
+}
+
+GameState::~GameState()
+{
+
+}
+
+static unsigned inputState(GameState& gameState);
+
+static void moveState(GameState& gameState);
 
 const unsigned GOAL_TOWER_VECTOR_INDEX = 2;
 
@@ -121,12 +142,12 @@ void resetTowers(std::vector<Tower>& towers, unsigned totalDisks)
     Puts the entire game back in its initial state; this includes resetting the
     towers and all state variables
 */
-void resetGame(std::vector<Tower>& towers, unsigned numDisks, unsigned& moves, std::string& statusMessage, std::string& prompt)
+void resetGame(GameState& gameState)
 {
-    resetTowers(towers, numDisks);
-    moves = 0;
-    statusMessage = "Type \"help\" at any time for instructions. Good luck!";
-    prompt = "What's your first move? ";
+    resetTowers(gameState.towers, gameState.numDisks);
+    gameState.moves = 0;
+    gameState.status = "Type \"help\" at any time for instructions. Good luck!";
+    gameState.question = "What's your first move? ";
 }
 
 /*
@@ -169,31 +190,21 @@ unsigned askNumDisks()
     return (unsigned)numDisks;
 }
 
-
 void game(unsigned initialDisks)
 {
-    unsigned numDisks = initialDisks;
-
-    std::vector<Tower> towers;  // Actual game rods
-    resetTowers(towers, numDisks);
-
-    TowerDrawer towerDrawer(numDisks + 3);
-
-    unsigned moves = 0;
-    bool requestQuit = false;
-    bool gameOver = false;
-    std::string status, question, rawInput;
-
-    status = "Type \"help\" at any time for instructions. Good luck!";
-    question = "What's your first move? ";
-    while(!(requestQuit || gameOver)) {
-        drawTowers(towers, towerDrawer);
-        printStatus(status);
-        askQuestion(question);
+    GameState gameState(initialDisks);
+    resetTowers(gameState.towers, gameState.numDisks);
+    std::string rawInput;
+    gameState.status = "Type \"help\" at any time for instructions. Good luck!";
+    gameState.question = "What's your first move? ";
+    while(!(gameState.requestQuit || gameState.gameOver)) {
+        drawTowers(gameState.towers, gameState.towerDrawer);
+        printStatus(gameState.status);
+        askQuestion(gameState.question);
         std::string rawInput = getRawInput();
-        std::vector<std::string> tokens = tokenize(rawInput);
-        if(inputState(tokens, requestQuit, towers, towerDrawer, numDisks, moves, status, question)) continue;
-        moveState(tokens, gameOver, towers, towerDrawer, numDisks, moves, status, question);
+        gameState.tokens = tokenize(rawInput);
+        if(inputState(gameState)) continue;
+        moveState(gameState);
     }
 }
 
@@ -205,14 +216,7 @@ void game(unsigned initialDisks)
 
     Returns 1 if the flow should return to the beginning of the game loop.
 */
-static unsigned inputState(const std::vector<std::string>& tokens,
-                           bool& requestQuit,
-                           std::vector<Tower>& towers,
-                           TowerDrawer& towerDrawer,
-                           unsigned& numDisks,
-                           unsigned& moves,
-                           std::string& status,
-                           std::string& question)
+static unsigned inputState(GameState& gameState)
 {
     const unsigned NUM_TUTORIAL_DISKS = 3;
     const unsigned TUTORIAL_ROD_HEIGHT = NUM_TUTORIAL_DISKS + 2;
@@ -221,22 +225,22 @@ static unsigned inputState(const std::vector<std::string>& tokens,
     TowerDrawer tutorialTowerDrawer(TUTORIAL_ROD_HEIGHT);
     resetTowers(tutorialTowers, NUM_TUTORIAL_DISKS);
 
-    switch(parseInput(tokens)) {
+    switch(parseInput(gameState.tokens)) {
     case MOVE: return 0;
     case EMPTY_INPUT: return 1;
     case COMMAND:
         {
-            switch(parseCommand(tokens.front())) {
+            switch(parseCommand(gameState.tokens.front())) {
             case REQUEST_QUIT:
                 {
-                    requestQuit = true;
+                    gameState.requestQuit = true;
                     return 1;
                 }
             case REQUEST_RESET:
                 {
-                    numDisks = askNumDisks();
-                    towerDrawer.set_pole_height(numDisks + 3);
-                    resetGame(towers, numDisks, moves, status, question);
+                    gameState.numDisks = askNumDisks();
+                    gameState.towerDrawer.set_pole_height(gameState.numDisks + 3);
+                    resetGame(gameState);
                     return 1;
                 }
             case REQUEST_HELP:
@@ -246,7 +250,7 @@ static unsigned inputState(const std::vector<std::string>& tokens,
                 }
             case INVALID_COMMAND:
                 {
-                    status = "No such command...";
+                    gameState.status = "No such command...";
                     return 1;
                 }
             }
@@ -254,7 +258,7 @@ static unsigned inputState(const std::vector<std::string>& tokens,
         }
     case INVALID_INPUT:
         {
-            status = "Huh?";
+            gameState.status = "Huh?";
             return 1;
         }
     }
@@ -266,51 +270,44 @@ static unsigned inputState(const std::vector<std::string>& tokens,
     Takes in tokens from the input stage and attempts to process them as tower
     moves.
 */
-static void moveState(const std::vector<std::string>& tokens,
-                      bool& gameOver,
-                      std::vector<Tower>& towers,
-                      TowerDrawer& towerDrawer,
-                      unsigned& numDisks,
-                      unsigned& moves,
-                      std::string& status,
-                      std::string& question)
+static void moveState(GameState& gameState)
 {
-    TOWER_MOVE towerMove = parseMove(tokens, towers);
+    TOWER_MOVE towerMove = parseMove(gameState.tokens, gameState.towers);
     switch(towerMove.moveType) {
     case VALID_MOVE:
         {
-            doMove(towerMove, towers);
-            moves++;
-            if(checkForGameWon(towers.at(GOAL_TOWER_VECTOR_INDEX), numDisks)) {
-                drawTowers(towers, towerDrawer);
+            doMove(towerMove, gameState.towers);
+            gameState.moves++;
+            if(checkForGameWon(gameState.towers.at(GOAL_TOWER_VECTOR_INDEX), gameState.numDisks)) {
+                drawTowers(gameState.towers, gameState.towerDrawer);
                 printStatus("You win!");
-                printResults(numDisks, moves);
+                printResults(gameState.numDisks, gameState.moves);
                 std::cout << "\n\n";
-                gameOver = !askPlayAgain();
-                if(!gameOver) {
-                    numDisks = askNumDisks();
-                    towerDrawer.set_pole_height(numDisks + 3);
-                    resetGame(towers, numDisks, moves, status, question);
+                gameState.gameOver = !askPlayAgain();
+                if(!gameState.gameOver) {
+                    gameState.numDisks = askNumDisks();
+                    gameState.towerDrawer.set_pole_height(gameState.numDisks + 3);
+                    resetGame(gameState);
                 }
                 return;
             }
-            status = "";
-            question = "What's your next move? ";
+            gameState.status = "";
+            gameState.question = "What's your next move? ";
             return;
         }
     case DISKLESS_TOWER:
         {
-            status = "Nothing on that tower...";
+            gameState.status = "Nothing on that tower...";
             return;
         }
     case LARGER_ON_SMALLER:
         {
-            status = "Can't place a larger disk on a smaller disk...";
+            gameState.status = "Can't place a larger disk on a smaller disk...";
             return;
         }
     case INVALID_MOVE_SYNTAX:
         {
-            status = "Can't do that...";
+            gameState.status = "Can't do that...";
         }
     }
 }
