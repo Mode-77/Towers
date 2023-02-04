@@ -2,3 +2,5 @@ towers
 .gdbinit
 tests/
 towers.exe
+*.dll
+*.zip
