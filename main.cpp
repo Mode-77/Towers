@@ -4,7 +4,6 @@
 */
 
 #include "game.h"
-#include "core_game.h"
 #include "screen.h"
 
 int main()
