@@ -8,9 +8,11 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-// Clears the terminal.
-//
-// The actual system call used is platform-dependent.
+/*
+    Clears the terminal.
+
+    The actual system call used is platform-dependent.
+*/
 void clearScreen();
 
 #endif
