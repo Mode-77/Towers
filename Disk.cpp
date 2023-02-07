@@ -16,7 +16,7 @@ void Disk::draw() const
 
 unsigned Disk::size() const { return size_; }
 
-void draw_solid_style(const Disk d)
+void draw_open_style(const Disk d)
 {
     std::cout << '[';   // Left edge of the disk
     unsigned j = 2 * d.size() + 1;

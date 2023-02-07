@@ -23,7 +23,7 @@ private:
     unsigned size_;
 };
 
-void draw_solid_style(Disk);
+void draw_open_style(Disk d);
 void draw_slash_bracket_style(Disk);
 
 #endif
