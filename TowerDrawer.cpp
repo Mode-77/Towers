@@ -67,8 +67,8 @@ unsigned TowerDrawer::center_of(const unsigned disk_size) const
 void TowerDrawer::draw_disk_row(const unsigned disk_index, const Tower& t) const
 {
     draw_spaces(center_of(t.size_of_largest_disk()) - center_of(t.size_of_disk_at(disk_index)));
-    if(!(t.size_of_disk_at(disk_index) & 1)) draw_slash_bracket_style(t.disk_at(disk_index));
-    else draw_open_style(t.disk_at(disk_index));
+    if(!(t.size_of_disk_at(disk_index) & 1)) drawDisk(t.disk_at(disk_index), '/');
+    else drawDisk(t.disk_at(disk_index), ' ');
     draw_spaces(center_of(t.size_of_largest_disk()) - center_of(t.size_of_disk_at(disk_index)));
 }
 
