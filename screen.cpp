@@ -8,16 +8,28 @@
 #include "screen.h"
 
 #ifdef PLATFORM_LINUX
-    #define CLEAR_SCREEN_COMMAND    "clear"
+    #include <iostream>
 #endif
 
 #ifdef PLATFORM_WINDOWS
-    #define CLEAR_SCREEN_COMMAND    "cls"
+    #include <windows.h>
 #endif
-
-#include <cstdlib>
 
 void clearScreen()
 {
-    system(CLEAR_SCREEN_COMMAND);
+#ifdef PLATFORM_LINUX
+    std::cout << "\033[2J";
+    std::cout << "\033[1;1H";
+#endif
+
+#ifdef PLATFORM_WINDOWS
+    COORD tl = {0,0};
+    CONSOLE_SCREEN_BUFFER_INFO s;
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+    GetConsoleScreenBufferInfo(console, &s);
+    DWORD written, cells = s.dwSize.X * s.dwSize.Y;
+    FillConsoleOutputCharacter(console, ' ', cells, tl, &written);
+    FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
+    SetConsoleCursorPosition(console, tl);
+#endif
 }
