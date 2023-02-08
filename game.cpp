@@ -64,7 +64,7 @@ const unsigned GOAL_TOWER_VECTOR_INDEX = 2;
     Returns the least possible number of moves required to win a game (perfect game).
     This is (2^d - 1), where d is the number of disks.
 */
-unsigned leastPossible(unsigned numDisks)
+static unsigned leastPossible(unsigned numDisks)
 {
     return (1U << numDisks) - 1;
 }
@@ -73,7 +73,7 @@ unsigned leastPossible(unsigned numDisks)
     Calculates and returns the game score as the number of moves the player made
     out of the minimum moves required to win
 */
-unsigned getScore(unsigned numDisks, unsigned moves)
+static unsigned getScore(unsigned numDisks, unsigned moves)
 {
     return (unsigned)(round(100.0 * leastPossible(numDisks) / moves));
 }
@@ -83,7 +83,7 @@ unsigned getScore(unsigned numDisks, unsigned moves)
     The statistics are the number of moves made, minimum moves required,
     and the final score
 */
-void printResults(unsigned numDisks, unsigned moves)
+static void printResults(unsigned numDisks, unsigned moves)
 {
     std::cout << "You finished in " << moves << " moves\n";
 
@@ -96,7 +96,7 @@ void printResults(unsigned numDisks, unsigned moves)
 /*
     Clears the screen and draws the towers vector using a tower drawer
 */
-void drawTowers(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer)
+static void drawTowers(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer)
 {
     clearScreen();
     towerDrawer.draw(towers);
@@ -105,7 +105,7 @@ void drawTowers(const std::vector<Tower>& towers, const TowerDrawer& towerDrawer
 /*
     Prints the status message after drawing the towers
 */
-void printStatus(const std::string& statusMessage)
+static void printStatus(const std::string& statusMessage)
 {
     std::cout << "\n";
     std::cout << statusMessage << "\n";
@@ -113,7 +113,7 @@ void printStatus(const std::string& statusMessage)
 }
 
 
-void askQuestion(const std::string& question)
+static void askQuestion(const std::string& question)
 {
     std::cout << question;
 }
@@ -122,7 +122,7 @@ void askQuestion(const std::string& question)
     Returns true if the winning condition has been reached, returns false
     otherwise
 */
-bool checkForGameWon(const Tower& goalTower, unsigned totalDisks)
+static bool checkForGameWon(const Tower& goalTower, unsigned totalDisks)
 {
     return goalTower.num_disks() == totalDisks;
 }
@@ -130,7 +130,7 @@ bool checkForGameWon(const Tower& goalTower, unsigned totalDisks)
 /*
     Puts the towers back in their initial state
 */
-void resetTowers(std::vector<Tower>& towers, unsigned totalDisks)
+static void resetTowers(std::vector<Tower>& towers, unsigned totalDisks)
 {
     towers.clear();
     towers.push_back(Tower(totalDisks));
@@ -142,7 +142,7 @@ void resetTowers(std::vector<Tower>& towers, unsigned totalDisks)
     Puts the entire game back in its initial state; this includes resetting the
     towers and all state variables
 */
-void resetGame(GameState& gameState)
+static void resetGame(GameState& gameState)
 {
     resetTowers(gameState.towers, gameState.numDisks);
     gameState.moves = 0;
@@ -157,7 +157,7 @@ void resetGame(GameState& gameState)
     Returns true if the player requests to play again, returns false if they
     don't.
 */
-bool askPlayAgain()
+static bool askPlayAgain()
 {
     std::string input;
     do {
